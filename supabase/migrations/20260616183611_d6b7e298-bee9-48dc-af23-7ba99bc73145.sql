@@ -1,0 +1,1 @@
+ALTER TABLE public.qual_lead_qualification ADD COLUMN IF NOT EXISTS disqualified boolean NOT NULL DEFAULT false;

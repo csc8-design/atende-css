@@ -1,0 +1,79 @@
+project_id = "rivfqexositrxqtwmmpi"
+
+[functions.whatsapp-webhook]
+verify_jwt = false
+
+[functions.send-whatsapp]
+verify_jwt = false
+
+[functions.manage-user]
+verify_jwt = false
+
+[functions.chatbot-ai]
+verify_jwt = false
+
+[functions.satisfaction-rating]
+verify_jwt = false
+
+[functions.check-inactivity]
+verify_jwt = false
+
+[functions.send-campaign]
+verify_jwt = false
+
+[functions.ai-analyze]
+verify_jwt = false
+
+[functions.google-calendar-callback]
+verify_jwt = false
+
+[functions.google-calendar-sync]
+verify_jwt = false
+
+[functions.qualify-prospect-lead]
+verify_jwt = false
+
+[functions.notify-agent-whatsapp]
+verify_jwt = false
+
+[functions.notify-no-reply]
+verify_jwt = false
+
+
+
+
+
+[functions.list-wa-templates]
+verify_jwt = false
+
+[functions.ai-search-leads]
+verify_jwt = false
+
+[functions.sync-popagro-leads]
+verify_jwt = false
+
+[functions.qual-webhook]
+verify_jwt = false
+
+[functions.qual-send-message]
+verify_jwt = false
+
+[functions.qual-analyze-lead]
+verify_jwt = false
+
+[functions.qual-transcribe-audio]
+verify_jwt = false
+
+[functions.send-meta-mass-campaign]
+verify_jwt = false
+
+[functions.check-mass-campaign-responses]
+verify_jwt = false
+
+[functions.check-meta-campaign-responses]
+verify_jwt = false
+
+[functions.analyze-contact-interest]
+verify_jwt = false
+
+

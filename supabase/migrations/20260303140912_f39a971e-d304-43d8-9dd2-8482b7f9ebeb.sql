@@ -1,0 +1,1 @@
+UPDATE public.departments SET name = 'Comercial / Peças' WHERE id = '621496b7-d9a7-43fd-b029-cda800c62649';

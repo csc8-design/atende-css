@@ -1,0 +1,1 @@
+ALTER TABLE public.mass_campaigns ADD COLUMN IF NOT EXISTS handoff_department_id UUID REFERENCES public.departments(id) ON DELETE SET NULL;

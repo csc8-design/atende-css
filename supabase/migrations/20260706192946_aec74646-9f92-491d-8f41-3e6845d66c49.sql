@@ -1,0 +1,2 @@
+ALTER TABLE public.contacts ADD COLUMN IF NOT EXISTS city TEXT;
+ALTER TABLE public.contacts ADD COLUMN IF NOT EXISTS state TEXT;

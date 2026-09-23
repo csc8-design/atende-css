@@ -1,0 +1,2 @@
+CREATE POLICY "Authenticated can read whatsapp media" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'whatsapp-media');
+CREATE POLICY "Authenticated can delete whatsapp media" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'whatsapp-media');

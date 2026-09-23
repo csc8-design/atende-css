@@ -1,0 +1,1 @@
+DROP POLICY "Agents can view all active contacts" ON public.contacts;

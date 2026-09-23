@@ -1,0 +1,27 @@
+User-agent: Googlebot
+Allow: /
+Disallow: /inbox
+Disallow: /chat
+Disallow: /settings
+Disallow: /contacts
+
+User-agent: Bingbot
+Allow: /
+Disallow: /inbox
+Disallow: /chat
+Disallow: /settings
+Disallow: /contacts
+
+User-agent: *
+Allow: /auth
+Allow: /
+Disallow: /inbox
+Disallow: /chat
+Disallow: /settings
+Disallow: /contacts
+Disallow: /campaigns
+Disallow: /reports
+Disallow: /history
+Disallow: /schedules
+
+Sitemap: https://atendepro.com.br/sitemap.xml

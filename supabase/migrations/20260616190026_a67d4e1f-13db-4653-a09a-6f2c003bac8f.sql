@@ -1,0 +1,1 @@
+ALTER TABLE public.mass_campaigns ALTER COLUMN message_template DROP NOT NULL;

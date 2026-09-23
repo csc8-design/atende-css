@@ -1,0 +1,1 @@
+UPDATE public.mass_campaign_leads SET status = 'replied', replied_at = now(), updated_at = now() WHERE id = 'c32cc0a0-d46e-4ddc-90f2-dbea6980752a' AND status = 'sent';

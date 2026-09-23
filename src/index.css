@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* WhatsApp Web-inspired light theme */
+    --background: 120 5% 96%;
+    --foreground: 200 15% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 200 15% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 15% 15%;
+
+    --primary: 142 60% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 120 8% 91%;
+    --secondary-foreground: 200 15% 15%;
+
+    --muted: 120 6% 90%;
+    --muted-foreground: 200 10% 46%;
+
+    --accent: 142 60% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 120 8% 87%;
+    --input: 120 8% 87%;
+    --ring: 142 60% 40%;
+
+    --radius: 0.625rem;
+
+    /* Sidebar - CBMaq navy blue #12306e */
+    --sidebar-bg: 220 72% 25%;
+    --sidebar-fg: 220 20% 88%;
+    --sidebar-fg-active: 0 0% 100%;
+    --sidebar-hover: 220 65% 32%;
+    --sidebar-accent: 220 60% 38%;
+    --sidebar-border: 220 70% 18%;
+
+    --channel-whatsapp: 142 70% 45%;
+    --channel-instagram: 328 80% 58%;
+    --channel-messenger: 221 80% 56%;
+
+    --success: 142 70% 40%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 221 80% 56%;
+    --info-foreground: 0 0% 100%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(142, 60%, 40%), hsl(142, 50%, 50%));
+    --gradient-sidebar: linear-gradient(180deg, hsl(220, 72%, 25%), hsl(220, 72%, 18%));
+    --gradient-card: linear-gradient(135deg, hsl(0, 0%, 100%), hsl(120, 5%, 96%));
+
+    --shadow-sm: 0 1px 2px 0 hsl(200 15% 10% / 0.04);
+    --shadow-md: 0 4px 6px -1px hsl(200 15% 10% / 0.06), 0 2px 4px -2px hsl(200 15% 10% / 0.04);
+    --shadow-lg: 0 10px 25px -5px hsl(200 15% 10% / 0.08), 0 8px 10px -6px hsl(200 15% 10% / 0.04);
+    --shadow-glow: 0 0 20px hsl(142 60% 40% / 0.15);
+
+    --sidebar-background: 220 72% 25%;
+    --sidebar-foreground: 220 20% 88%;
+    --sidebar-primary: 220 72% 25%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 65% 32%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 70% 18%;
+    --sidebar-ring: 220 72% 25%;
+  }
+
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 96%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 96%;
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 215 55% 28%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222 40% 16%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 222 35% 18%;
+    --muted-foreground: 215 20% 60%;
+    --accent: 215 55% 28%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 210 40% 96%;
+    --border: 222 35% 18%;
+    --input: 222 35% 18%;
+    --ring: 215 55% 28%;
+    --sidebar-background: 222 47% 6%;
+    --sidebar-foreground: 213 27% 70%;
+    --sidebar-primary: 215 55% 28%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 40% 12%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 222 35% 14%;
+    --sidebar-ring: 215 55% 28%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'cv11', 'ss01', 'ss03', 'cv02';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.005em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.022em;
+    font-feature-settings: 'ss01';
+  }
+
+  .font-display {
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.022em;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 20px;
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left, 0px);
+  }
+
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+}

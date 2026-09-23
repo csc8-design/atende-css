@@ -1,0 +1,1 @@
+ALTER TABLE public.mass_campaigns ADD COLUMN IF NOT EXISTS evolution_instance text NOT NULL DEFAULT 'APIATENDE';
