@@ -62,7 +62,7 @@ const allNavItems: any[] = [
       { icon: BarChart3, label: "Análise de Interações", path: "/carteira/analise", roles: ["admin", "manager"] },
     ],
   },
-  { icon: ClipboardCheck, label: "Qualificação IA", path: "/qualificacao", roles: ["admin", "manager", "agent"], requiresQualEmail: true },
+  { icon: ClipboardCheck, label: "Qualificação IA", path: "/qualificacao", roles: ["admin", "manager", "agent"], requiresQualEmail: true, requiresEvolution: true },
   { icon: Timer, label: "SLA - Atendimento", path: "/sla", roles: ["admin", "manager"] },
   { icon: MessagesSquare, label: "Chat Interno", path: "/chat", roles: ["admin", "manager", "agent"] },
   { icon: Megaphone, label: "Campanhas", path: "/campaigns", roles: ["admin", "manager", "agent"], requiresQualEmail: true },

@@ -1,3 +1,4 @@
+import { EVOLUTION_ENABLED } from "@/lib/features";
 import { useEffect, useMemo, useState, useRef } from "react";
 import {
   Plus, Search, Send, MessageCircle, Edit2, Trash2, Download, Upload,
@@ -971,7 +972,7 @@ const Prospecting = () => {
                     />
                     Selecionar visíveis ({selectedIds.size}/{dispatchableLeads.length})
                   </label>
-                  <button
+                  {EVOLUTION_ENABLED && <><button
                     onClick={checkReturns}
                     disabled={checkingReturns}
                     className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-border bg-card text-xs font-medium text-foreground hover:bg-secondary disabled:opacity-50"
@@ -987,7 +988,7 @@ const Prospecting = () => {
                   >
                     <Send className="w-3.5 h-3.5" />
                     Disparar
-                  </button>
+                  </button></>}
                 </div>
               </div>
             </section>
@@ -1153,7 +1154,7 @@ const Prospecting = () => {
 
                       {/* Footer com ações */}
                       <div className="px-4 py-3 bg-muted/30 border-t border-border/60 grid grid-cols-2 gap-2">
-                        <button
+                        {EVOLUTION_ENABLED && <button
                           onClick={() => setConfirmLead(l)}
                           disabled={sendingId === l.id}
                           className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm ${
@@ -1168,7 +1169,7 @@ const Prospecting = () => {
                           ) : (
                             <><Send className="w-3.5 h-3.5" /> {sent ? "Reenviar" : "Enviar WA"}</>
                           )}
-                        </button>
+                        </button>}
                         <button
                           onClick={() => setEditingLead(l)}
                           className="flex items-center justify-center gap-1.5 bg-card border border-border text-foreground px-3 py-2 rounded-lg text-xs font-semibold hover:bg-secondary transition-all"
