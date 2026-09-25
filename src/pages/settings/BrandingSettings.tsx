@@ -116,7 +116,7 @@ const BrandingSettings = () => {
           <div>
             <Label className="text-xs">Nome da Plataforma</Label>
             <Input
-              value={get("platform_name", "AtendePro")}
+              value={get("platform_name", "Atende CSS · ENGWE")}
               onChange={(e) => set("platform_name", e.target.value)}
               placeholder="Nome exibido no sistema"
             />

@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.cbmaq.atendepro',
-  appName: 'AtendePro',
+  appId: 'com.engwe.atendecss',
+  appName: 'Atende CSS · ENGWE',
   webDir: 'dist',
   server: {
     url: 'https://atendimento.cbmaq.com.br',

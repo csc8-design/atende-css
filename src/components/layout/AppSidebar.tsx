@@ -36,7 +36,7 @@ import {
   BriefcaseBusiness,
 } from "lucide-react";
 import NotificationBell from "./NotificationBell";
-import atendeCbmaqLogo from "@/assets/atendecbmaq-logo.png";
+import brandLogo from "@/assets/logo-placeholder.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -312,7 +312,7 @@ const AppSidebar = () => {
               </div>
             )
           ) : (
-            <img src={atendeCbmaqLogo} alt="AtendeCBMaq" className="w-full h-full object-cover animate-fade-in" />
+            <img src={brandLogo} alt="Atende CSS · ENGWE" className="w-full h-full object-cover animate-fade-in" />
           )}
         </div>
 
@@ -408,7 +408,7 @@ const AppSidebar = () => {
             </div>
           )
         ) : (
-          <img src={atendeCbmaqLogo} alt="AtendeCBMaq" className="w-full h-full object-cover animate-fade-in" />
+          <img src={brandLogo} alt="Atende CSS · ENGWE" className="w-full h-full object-cover animate-fade-in" />
         )}
       </div>
 

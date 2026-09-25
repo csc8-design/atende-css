@@ -111,7 +111,7 @@ const ChatbotFlowDiagram = () => {
       position: { x: 400, y: 0 },
       data: {
         label: rootConfig?.name || "Menu Inicial",
-        message: rootConfig?.welcome_message || "Olá! Bem vindo à CBMaq. Como posso ajudá-lo?",
+        message: rootConfig?.welcome_message || "Olá! Bem-vindo à ENGWE Brasil. Como posso ajudá-lo?",
         options: configs.filter((c) => c.id !== rootConfig?.id).map((c) => c.name.replace("Submenu ", "")),
       },
       sourcePosition: Position.Bottom,

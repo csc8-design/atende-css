@@ -15,7 +15,7 @@ export interface BrandingConfig {
 }
 
 const DEFAULTS: BrandingConfig = {
-  platform_name: "AtendePro",
+  platform_name: "Atende CSS · ENGWE",
   platform_description: "Gestão integrada de conversas, atendentes e clientes via WhatsApp Business.",
   logo_url: "",
   logo_light_url: "",

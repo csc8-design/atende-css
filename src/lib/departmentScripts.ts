@@ -2,29 +2,29 @@
 
 const SCRIPTS: Record<string, (greeting: string, salutation: string) => string> = {
   comercial: (g, s) =>
-    `${s}, ${g}.\n\nVocê está em contato com o setor Comercial da CBMaq.\n\nComo posso auxiliá-lo(a) em relação a propostas, equipamentos ou condições comerciais?`,
+    `${s}, ${g}.\n\nVocê está em contato com o setor Comercial da ENGWE Brasil.\n\nComo posso auxiliá-lo(a) em relação a propostas, equipamentos ou condições comerciais?`,
   financeiro: (g, s) =>
-    `${s}, ${g}.\n\nAqui é do setor Financeiro da CBMaq.\n\nEm que podemos ajudar quanto a pagamentos, boletos, faturamento ou negociações?`,
+    `${s}, ${g}.\n\nAqui é do setor Financeiro da ENGWE Brasil.\n\nEm que podemos ajudar quanto a pagamentos, boletos, faturamento ou negociações?`,
   "pos-vendas": (g, s) =>
-    `${s}, ${g}.\n\nVocê está falando com o setor de Pós-Vendas da CBMaq.\n\nComo podemos auxiliá-lo(a) em relação a suporte, garantias ou acompanhamento de serviços?`,
+    `${s}, ${g}.\n\nVocê está falando com o setor de Pós-Vendas da ENGWE Brasil.\n\nComo podemos auxiliá-lo(a) em relação a suporte, garantias ou acompanhamento de serviços?`,
   "pecas-balcao": (g, s) =>
-    `${s}, ${g}.\n\nAqui é do setor de Peças Balcão da CBMaq.\n\nPoderia informar a peça ou equipamento desejado para que possamos verificar disponibilidade e valores?`,
+    `${s}, ${g}.\n\nAqui é do setor de Peças Balcão da ENGWE Brasil.\n\nPoderia informar a peça ou equipamento desejado para que possamos verificar disponibilidade e valores?`,
   "loja-online": (g, s) =>
-    `${s}, ${g}.\n\nVocê está em contato com a equipe da Loja Online da CBMaq.\n\nComo podemos auxiliá-lo(a) em sua compra pelo site ou em relação a produtos disponíveis?`,
+    `${s}, ${g}.\n\nVocê está em contato com a equipe da Loja Online da ENGWE Brasil.\n\nComo podemos auxiliá-lo(a) em sua compra pelo site ou em relação a produtos disponíveis?`,
   importacao: (g, s) =>
-    `${s}, ${g}.\n\nAqui é do setor de Importação da CBMaq.\n\nEm que podemos auxiliá-lo(a) quanto a processos, prazos ou demandas de importação?`,
+    `${s}, ${g}.\n\nAqui é do setor de Importação da ENGWE Brasil.\n\nEm que podemos auxiliá-lo(a) quanto a processos, prazos ou demandas de importação?`,
   seguros: (g, s) =>
-    `${s}, ${g}.\n\nVocê está em contato com o setor de Seguros da CBMaq.\n\nComo podemos ajudá-lo(a) em relação a cotações, apólices ou sinistros?`,
+    `${s}, ${g}.\n\nVocê está em contato com o setor de Seguros da ENGWE Brasil.\n\nComo podemos ajudá-lo(a) em relação a cotações, apólices ou sinistros?`,
   consorcios: (g, s) =>
-    `${s}, ${g}.\n\nAqui é do setor de Consórcios da CBMaq.\n\nEm que podemos auxiliá-lo(a) quanto a planos, adesões ou contemplações?`,
+    `${s}, ${g}.\n\nAqui é do setor de Consórcios da ENGWE Brasil.\n\nEm que podemos auxiliá-lo(a) quanto a planos, adesões ou contemplações?`,
   "consultoria-especializada": (g, s) =>
-    `${s}, ${g}.\n\nVocê está em contato com a área de Consultoria Especializada da CBMaq.\n\nPoderia nos informar sua demanda para que possamos direcionar a melhor solução técnica?`,
+    `${s}, ${g}.\n\nVocê está em contato com a área de Consultoria Especializada da ENGWE Brasil.\n\nPoderia nos informar sua demanda para que possamos direcionar a melhor solução técnica?`,
   governo: (g, s) =>
-    `${s}, ${g}.\n\nAqui é do setor de Atendimento ao Governo da CBMaq.\n\nComo podemos auxiliá-lo(a) em relação a processos, licitações ou demandas institucionais?`,
+    `${s}, ${g}.\n\nAqui é do setor de Atendimento ao Governo da ENGWE Brasil.\n\nComo podemos auxiliá-lo(a) em relação a processos, licitações ou demandas institucionais?`,
   telemetria: (g, s) =>
-    `${s}, ${g}.\n\nVocê está em contato com o setor de Telemetria da CBMaq.\n\nComo podemos auxiliá-lo(a) quanto a monitoramento, dados operacionais ou suporte técnico?`,
+    `${s}, ${g}.\n\nVocê está em contato com o setor de Telemetria da ENGWE Brasil.\n\nComo podemos auxiliá-lo(a) quanto a monitoramento, dados operacionais ou suporte técnico?`,
   "compras-fornecedores": (g, s) =>
-    `${s}, ${g}.\n\nVocê está em contato com o setor de Compras (Fornecedores) da CBMaq.\n\nComo podemos auxiliá-lo(a) em relação a propostas, cotações ou cadastro de fornecedores?`,
+    `${s}, ${g}.\n\nVocê está em contato com o setor de Compras (Fornecedores) da ENGWE Brasil.\n\nComo podemos auxiliá-lo(a) em relação a propostas, cotações ou cadastro de fornecedores?`,
 };
 
 const slugify = (s: string) =>
