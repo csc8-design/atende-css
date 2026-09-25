@@ -2,13 +2,13 @@
 
 const SCRIPTS: Record<string, (greeting: string, salutation: string) => string> = {
   comercial: (g, s) =>
-    `${s}, ${g}.\n\nVocê está em contato com o setor Comercial da ENGWE Brasil.\n\nComo posso auxiliá-lo(a) em relação a propostas, equipamentos ou condições comerciais?`,
+    `${s}, ${g}.\n\nVocê está em contato com o setor Comercial da ENGWE Brasil.\n\nComo posso auxiliá-lo(a) em relação a propostas de revenda, modelos ENGWE (ex.: EP-2 3.0 Boost) ou condições comerciais?`,
   financeiro: (g, s) =>
     `${s}, ${g}.\n\nAqui é do setor Financeiro da ENGWE Brasil.\n\nEm que podemos ajudar quanto a pagamentos, boletos, faturamento ou negociações?`,
   "pos-vendas": (g, s) =>
     `${s}, ${g}.\n\nVocê está falando com o setor de Pós-Vendas da ENGWE Brasil.\n\nComo podemos auxiliá-lo(a) em relação a suporte, garantias ou acompanhamento de serviços?`,
   "pecas-balcao": (g, s) =>
-    `${s}, ${g}.\n\nAqui é do setor de Peças Balcão da ENGWE Brasil.\n\nPoderia informar a peça ou equipamento desejado para que possamos verificar disponibilidade e valores?`,
+    `${s}, ${g}.\n\nAqui é do setor de Peças Balcão da ENGWE Brasil.\n\nPoderia informar a peça ou o modelo ENGWE desejado (ex.: bateria da EP-2 3.0 Boost) para que possamos verificar disponibilidade e valores?`,
   "loja-online": (g, s) =>
     `${s}, ${g}.\n\nVocê está em contato com a equipe da Loja Online da ENGWE Brasil.\n\nComo podemos auxiliá-lo(a) em sua compra pelo site ou em relação a produtos disponíveis?`,
   importacao: (g, s) =>
