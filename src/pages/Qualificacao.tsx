@@ -6,9 +6,9 @@ import QualChatArea from "@/components/qualification/QualChatArea";
 import QualAIPanel from "@/components/qualification/QualAIPanel";
 import { useQualConversations, useQualMessages, useQualQualification, useQualificationsMap } from "@/hooks/useQualification";
 import { useAuth } from "@/contexts/AuthContext";
+import { EVOLUTION_ENABLED } from "@/lib/features";
 import { supabase } from "@/integrations/supabase/client";
 
-const ALLOWED_EMAILS = ["comercial@cbmaq.com.br", "coordenacaoti@cbmaq.com.br"];
 
 export default function Qualificacao() {
   const { user, isAdmin, isManager, loading: authLoading } = useAuth();
@@ -16,8 +16,9 @@ export default function Qualificacao() {
 
   useEffect(() => {
     if (!user) return;
+    if (!EVOLUTION_ENABLED) { setAllowed(false); return; }
     if (isAdmin || isManager) { setAllowed(true); return; }
-    setAllowed(ALLOWED_EMAILS.includes(user.email?.toLowerCase() || ""));
+    setAllowed(false);
   }, [user, isAdmin, isManager]);
 
   const { items } = useQualConversations();

@@ -10,10 +10,9 @@ import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 
-const SUPER_ADMIN_EMAIL = "admin@bsec.com.br";
 
 const BrandingSettings = () => {
-  const { user } = useAuth();
+  const { isAdmin } = useAuth();
   const { settings, loading, updateSetting, saveAll } = useSystemSettings();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState<string | null>(null);
@@ -21,7 +20,7 @@ const BrandingSettings = () => {
   const logoLightInputRef = useRef<HTMLInputElement>(null);
   const faviconInputRef = useRef<HTMLInputElement>(null);
 
-  if (user?.email?.toLowerCase() !== SUPER_ADMIN_EMAIL) {
+  if (!isAdmin) {
     return <Navigate to="/settings" replace />;
   }
 
@@ -116,7 +115,7 @@ const BrandingSettings = () => {
           <div>
             <Label className="text-xs">Nome da Plataforma</Label>
             <Input
-              value={get("platform_name", "AtendePro")}
+              value={get("platform_name", "Atende CSS · ENGWE")}
               onChange={(e) => set("platform_name", e.target.value)}
               placeholder="Nome exibido no sistema"
             />

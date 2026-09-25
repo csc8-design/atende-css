@@ -23,19 +23,10 @@ import Monitoring from "./pages/Monitoring";
 import Prospecting from "./pages/Prospecting";
 import Crm from "./pages/Crm";
 import SLA from "./pages/SLA";
-import CbmaqSiteLeads from "./pages/CbmaqSiteLeads";
-import ClientesCompras from "./pages/ClientesCompras";
 import Qualificacao from "./pages/Qualificacao";
 import MinhaCarteira from "./pages/MinhaCarteira";
 import AnaliseInteracoes from "./pages/AnaliseInteracoes";
 
-// BSec Admin
-import BsecAdminLayout from "./pages/bsec-admin/BsecAdminLayout";
-import BsecDashboard from "./pages/bsec-admin/BsecDashboard";
-import TenantsPage from "./pages/bsec-admin/TenantsPage";
-import ApisPage from "./pages/bsec-admin/ApisPage";
-import PaymentsPage from "./pages/bsec-admin/PaymentsPage";
-import WhitelabelPage from "./pages/bsec-admin/WhitelabelPage";
 
 // Settings
 import SettingsLayout from "./pages/settings/SettingsLayout";
@@ -121,8 +112,6 @@ const AppRoutes = () => {
     <Route path="/monitoring" element={<ProtectedRoute><Monitoring /></ProtectedRoute>} />
     <Route path="/prospecting" element={<ProtectedRoute><Prospecting /></ProtectedRoute>} />
     <Route path="/crm" element={<ProtectedRoute><Crm /></ProtectedRoute>} />
-    <Route path="/cbmaq-site-leads" element={<ProtectedRoute><CbmaqSiteLeads /></ProtectedRoute>} />
-    <Route path="/clientes-compras" element={<ProtectedRoute><ClientesCompras /></ProtectedRoute>} />
     <Route path="/qualificacao" element={<ProtectedRoute><Qualificacao /></ProtectedRoute>} />
     <Route path="/minha-carteira" element={<ProtectedRoute><MinhaCarteira /></ProtectedRoute>} />
     <Route path="/carteira/analise" element={<ProtectedRoute><AnaliseInteracoes /></ProtectedRoute>} />
@@ -147,14 +136,6 @@ const AppRoutes = () => {
       <Route path="branding" element={<BrandingSettings />} />
     </Route>
 
-    {/* BSec Admin - Painel Master */}
-    <Route path="/bsec-admin" element={<ProtectedRoute><BsecAdminLayout /></ProtectedRoute>}>
-      <Route index element={<BsecDashboard />} />
-      <Route path="tenants" element={<TenantsPage />} />
-      <Route path="apis" element={<ApisPage />} />
-      <Route path="payments" element={<PaymentsPage />} />
-      <Route path="whitelabel" element={<WhitelabelPage />} />
-    </Route>
 
     <Route path="*" element={<NotFound />} />
   </Routes>

@@ -42,7 +42,6 @@ const allSettingsNav = [
   { icon: User, label: "Meus Dados", path: "/settings/profile", access: "all" as const },
 ];
 
-const SUPER_ADMIN_EMAIL = "admin@bsec.com.br";
 
 const SettingsLayout = () => {
   const location = useLocation();
@@ -50,7 +49,7 @@ const SettingsLayout = () => {
   const { isAdmin, user } = useAuth();
   const isMobile = useIsMobile();
 
-  const isSuperAdmin = user?.email?.toLowerCase() === SUPER_ADMIN_EMAIL;
+  const isSuperAdmin = isAdmin;
 
   const settingsNav = allSettingsNav.filter(
     (item) => {

@@ -36,7 +36,8 @@ import {
   BriefcaseBusiness,
 } from "lucide-react";
 import NotificationBell from "./NotificationBell";
-import atendeCbmaqLogo from "@/assets/atendecbmaq-logo.png";
+import { EVOLUTION_ENABLED } from "@/lib/features";
+import brandLogo from "@/assets/logo-placeholder.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -62,7 +63,7 @@ const allNavItems: any[] = [
       { icon: BarChart3, label: "Análise de Interações", path: "/carteira/analise", roles: ["admin", "manager"] },
     ],
   },
-  { icon: ClipboardCheck, label: "Qualificação IA", path: "/qualificacao", roles: ["admin", "manager", "agent"], requiresQualEmail: true },
+  { icon: ClipboardCheck, label: "Qualificação IA", path: "/qualificacao", roles: ["admin", "manager", "agent"], requiresQualEmail: true, requiresEvolution: true },
   { icon: Timer, label: "SLA - Atendimento", path: "/sla", roles: ["admin", "manager"] },
   { icon: MessagesSquare, label: "Chat Interno", path: "/chat", roles: ["admin", "manager", "agent"] },
   { icon: Megaphone, label: "Campanhas", path: "/campaigns", roles: ["admin", "manager", "agent"], requiresQualEmail: true },
@@ -138,7 +139,6 @@ const AppSidebar = () => {
     return () => { supabase.removeChannel(channel); };
   }, [user]);
 
-  const isSuperAdmin = user?.email?.toLowerCase() === "admin@bsec.com.br";
 
   const isDark = theme === "dark" || (theme === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
@@ -157,8 +157,7 @@ const AppSidebar = () => {
 
   const isAgent = !roles.includes("admin") && !roles.includes("manager");
 
-  const QUAL_ALLOWED_EMAILS = ["comercial@cbmaq.com.br", "coordenacaoti@cbmaq.com.br"];
-  const hasQualEmailAccess = roles.includes("admin") || roles.includes("manager") || QUAL_ALLOWED_EMAILS.includes(user?.email?.toLowerCase() || "");
+  const hasQualEmailAccess = roles.includes("admin") || roles.includes("manager");
 
   const filteredNavItems = allNavItems
     .map((item: any) => {
@@ -167,6 +166,7 @@ const AppSidebar = () => {
         if (!c.roles.some((r: string) => roles.includes(r as any))) return false;
         if (c.requiresComercial && !isInComercial) return false;
         if (c.requiresQualEmail && !hasQualEmailAccess) return false;
+        if (c.requiresEvolution && !EVOLUTION_ENABLED) return false;
         return true;
       });
       return { ...item, children: kids };
@@ -175,6 +175,7 @@ const AppSidebar = () => {
       if (!item.roles.some((r: string) => roles.includes(r as any))) return false;
       if (item.requiresComercial && !isInComercial) return false;
       if (item.requiresQualEmail && !hasQualEmailAccess) return false;
+      if (item.requiresEvolution && !EVOLUTION_ENABLED) return false;
       if (item.children && item.children.length === 0) return false;
       return true;
     });
@@ -312,7 +313,7 @@ const AppSidebar = () => {
               </div>
             )
           ) : (
-            <img src={atendeCbmaqLogo} alt="AtendeCBMaq" className="w-full h-full object-cover animate-fade-in" />
+            <img src={brandLogo} alt="Atende CSS · ENGWE" className="w-full h-full object-cover animate-fade-in" />
           )}
         </div>
 
@@ -408,7 +409,7 @@ const AppSidebar = () => {
             </div>
           )
         ) : (
-          <img src={atendeCbmaqLogo} alt="AtendeCBMaq" className="w-full h-full object-cover animate-fade-in" />
+          <img src={brandLogo} alt="Atende CSS · ENGWE" className="w-full h-full object-cover animate-fade-in" />
         )}
       </div>
 
@@ -431,23 +432,6 @@ const AppSidebar = () => {
       <nav className="flex-1 py-2 px-3 space-y-1 overflow-y-auto scrollbar-thin">
         {filteredNavItems.map((item) => renderNavEntry(item))}
       </nav>
-
-      {/* BSec Admin - only for superadmin */}
-      {isSuperAdmin && (
-        <div className="px-3 pb-1">
-          <Link
-            to="/bsec-admin"
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
-              location.pathname.startsWith("/bsec-admin")
-                ? "bg-primary/15 text-primary"
-                : "text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground"
-            }`}
-          >
-            <Shield className={`w-5 h-5 flex-shrink-0 ${location.pathname.startsWith("/bsec-admin") ? "text-primary" : ""}`} />
-            {!collapsed && <span className="animate-fade-in">BSec Admin</span>}
-          </Link>
-        </div>
-      )}
 
       {/* Notifications */}
       <div className="px-3 pb-1">

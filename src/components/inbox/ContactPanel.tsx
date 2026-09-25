@@ -340,19 +340,19 @@ function EditableInfo({
             <Input
               value={form.interest_type}
               onChange={(e) => setForm((f) => ({ ...f, interest_type: e.target.value }))}
-              placeholder="Ex: Máquina, Peças, Serviço"
+              placeholder="Ex: Revenda, Bicicletas, Patinetes"
               maxLength={100}
               className="h-8 text-sm mt-1"
             />
           </div>
           <div>
             <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Equipamento/Aplicação pretendida
+              Modelos ENGWE de interesse
             </label>
             <Input
               value={form.desired_equipment}
               onChange={(e) => setForm((f) => ({ ...f, desired_equipment: e.target.value }))}
-              placeholder="Ex: Trator Lovol 50cv para lavoura"
+              placeholder="Ex: ENGWE EP-2 3.0 Boost, Engine Pro 2.0"
               maxLength={200}
               className="h-8 text-sm mt-1"
             />
@@ -481,7 +481,7 @@ function EditableInfo({
           <div className="flex items-center gap-2.5 text-sm">
             <FileText className="w-4 h-4 text-muted-foreground flex-shrink-0" />
             <div className="min-w-0">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Equipamento/Aplicação pretendida</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Modelos ENGWE de interesse</p>
               <p className="text-foreground break-words">{contact.desired_equipment || "—"}</p>
             </div>
           </div>

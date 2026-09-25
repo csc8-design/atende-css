@@ -405,7 +405,7 @@ const ChatArea = ({ conversation, isMobile, onBack, onShowContact, onConversatio
       category: "Reengajamento",
       language: "pt_BR",
       body:
-        `Olá, ${contactFirstName}. Aqui é o ${agentShort} da CBmaq.\n\n` +
+        `Olá, ${contactFirstName}. Aqui é o ${agentShort} da ENGWE Brasil.\n\n` +
         `Vi que faz um tempo que não nos falamos. Podemos ajudar em algo?`,
       params: [contactFirstName, agentShort],
     },

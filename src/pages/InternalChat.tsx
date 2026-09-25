@@ -574,7 +574,7 @@ const ChatAreaInternal = ({ channel, isMobile, onBack }: { channel: InternalChan
       : channel.name || "Grupo";
 
   const startVideoCall = useCallback(async () => {
-    const roomId = `cbmaq-${channel.id.slice(0, 8)}-${Date.now()}`;
+    const roomId = `atendecss-${channel.id.slice(0, 8)}-${Date.now()}`;
     setVideoCallRoom(roomId);
     // Send system message about the call
     if (user) {

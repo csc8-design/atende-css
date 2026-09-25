@@ -3,9 +3,10 @@ import MassCampaignsTab from "@/components/campaigns/MassCampaignsTab";
 import MetaTemplateCampaignsTab from "@/components/campaigns/MetaTemplateCampaignsTab";
 import { useState } from "react";
 import { Zap, FileText } from "lucide-react";
+import { EVOLUTION_ENABLED } from "@/lib/features";
 
 const Campaigns = () => {
-  const [tab, setTab] = useState<"mass" | "meta">("mass");
+  const [tab, setTab] = useState<"mass" | "meta">(EVOLUTION_ENABLED ? "mass" : "meta");
 
   return (
     <AppLayout>
@@ -16,14 +17,14 @@ const Campaigns = () => {
         </div>
 
         <div className="flex gap-1 border-b border-border">
-          <button
+          {EVOLUTION_ENABLED && <button
             onClick={() => setTab("mass")}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition ${
               tab === "mass" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
             <Zap className="w-4 h-4" /> Disparo em Massa (Evolution)
-          </button>
+          </button>}
           <button
             onClick={() => setTab("meta")}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition ${
@@ -34,7 +35,7 @@ const Campaigns = () => {
           </button>
         </div>
 
-        {tab === "mass" ? <MassCampaignsTab /> : <MetaTemplateCampaignsTab />}
+        {tab === "mass" && EVOLUTION_ENABLED ? <MassCampaignsTab /> : <MetaTemplateCampaignsTab />}
       </div>
     </AppLayout>
   );

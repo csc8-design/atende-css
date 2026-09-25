@@ -17,9 +17,9 @@ const META_TEMPLATES = [
   {
     name: "arraiacbmaq",
     language: "pt_BR",
-    label: "Arraiá CBMaq — 30% OFF + Starlink",
+    label: "Arraiá ENGWE — 30% OFF + Starlink",
     hasHeaderImage: false,
-    body: "🔥 Arraiá de Ofertas CBMaq:\n\nAté 30% OFF e Concorra a uma Starlink.\n\nOlá, {{1}}! Theo aqui.\n\nVi seu cadastro e separei as máquinas ideais para o seu segmento com um super desconto de 30% OFF exclusivo de Festa Junina.\n\nÉ a oportunidade certa para melhorar sua operação com o melhor preço do ano.\n\nQuer receber os modelos e as condições de pagamento? Clique abaixo e fale comigo agora!",
+    body: "🔥 Arraiá de Ofertas ENGWE:\n\nAté 30% OFF e Concorra a uma Starlink.\n\nOlá, {{1}}! Theo aqui.\n\nVi seu cadastro e separei as máquinas ideais para o seu segmento com um super desconto de 30% OFF exclusivo de Festa Junina.\n\nÉ a oportunidade certa para melhorar sua operação com o melhor preço do ano.\n\nQuer receber os modelos e as condições de pagamento? Clique abaixo e fale comigo agora!",
     variables: ["nome"] as const,
   },
   {
@@ -27,7 +27,7 @@ const META_TEMPLATES = [
     language: "pt_BR",
     label: "Tratores Arraiá — 30% OFF + Starlink",
     hasHeaderImage: true,
-    body: "🔥 Arraiá de Ofertas CBMaq:\n\nAté 30% OFF e Concorra a uma Starlink.\n\nOlá, {{1}}! Theo aqui.\n\nVi seu cadastro e separei as tratores ideais para o seu segmento com um super desconto de 30% OFF exclusivo de Festa Junina.\n\nÉ a oportunidade certa para melhorar sua operação com o melhor preço do ano.\n\nQuer receber os modelos e as condições de pagamento?",
+    body: "🔥 Arraiá de Ofertas ENGWE:\n\nAté 30% OFF e Concorra a uma Starlink.\n\nOlá, {{1}}! Theo aqui.\n\nVi seu cadastro e separei as tratores ideais para o seu segmento com um super desconto de 30% OFF exclusivo de Festa Junina.\n\nÉ a oportunidade certa para melhorar sua operação com o melhor preço do ano.\n\nQuer receber os modelos e as condições de pagamento?",
     variables: ["nome"] as const,
   },
 ];

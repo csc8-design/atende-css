@@ -237,7 +237,7 @@ const Contacts = () => {
     }
   };
 
-  const isSuperAdmin = user?.email?.toLowerCase() === "admin@bsec.com.br";
+  const isSuperAdmin = isAdmin;
 
   const handleExportCSV = async () => {
     toast.info("Exportando contatos...");

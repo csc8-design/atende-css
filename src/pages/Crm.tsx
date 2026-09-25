@@ -159,7 +159,7 @@ function DealCard({ deal, onEdit, onOpenChat, onAddTask, onSendWhatsAppWeb, onSe
             className="h-7 text-[10px] px-1 bg-[#25D366] hover:bg-[#20bd5a] text-white"
             onPointerDown={(e) => e.stopPropagation()}
             onClick={onSendWhatsAppWeb}
-            title="Abre o WhatsApp Web no seu navegador (envio pessoal, NÃO registra no AtendeCBMaq)"
+            title="Abre o WhatsApp Web no seu navegador (envio pessoal, NÃO registra no Atende CSS · ENGWE)"
           >
             <MessageCircle className="w-3 h-3 mr-1" /> WhatsApp Web
           </Button>
@@ -168,9 +168,9 @@ function DealCard({ deal, onEdit, onOpenChat, onAddTask, onSendWhatsAppWeb, onSe
             className="h-7 text-[10px] px-1 bg-primary hover:bg-primary/90 text-primary-foreground"
             onPointerDown={(e) => e.stopPropagation()}
             onClick={onSendAtende}
-            title="Atende pelo AtendeCBMaq — registra no histórico oficial e na conversa"
+            title="Atende pelo Atende CSS · ENGWE — registra no histórico oficial e na conversa"
           >
-            <MessageCircle className="w-3 h-3 mr-1" /> AtendeCBMaq
+            <MessageCircle className="w-3 h-3 mr-1" /> Atende CSS · ENGWE
           </Button>
         </div>
 
