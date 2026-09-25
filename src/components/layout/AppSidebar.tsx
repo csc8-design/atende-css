@@ -138,7 +138,6 @@ const AppSidebar = () => {
     return () => { supabase.removeChannel(channel); };
   }, [user]);
 
-  const isSuperAdmin = user?.email?.toLowerCase() === "admin@bsec.com.br";
 
   const isDark = theme === "dark" || (theme === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
@@ -157,8 +156,7 @@ const AppSidebar = () => {
 
   const isAgent = !roles.includes("admin") && !roles.includes("manager");
 
-  const QUAL_ALLOWED_EMAILS = ["comercial@cbmaq.com.br", "coordenacaoti@cbmaq.com.br"];
-  const hasQualEmailAccess = roles.includes("admin") || roles.includes("manager") || QUAL_ALLOWED_EMAILS.includes(user?.email?.toLowerCase() || "");
+  const hasQualEmailAccess = roles.includes("admin") || roles.includes("manager");
 
   const filteredNavItems = allNavItems
     .map((item: any) => {
@@ -431,23 +429,6 @@ const AppSidebar = () => {
       <nav className="flex-1 py-2 px-3 space-y-1 overflow-y-auto scrollbar-thin">
         {filteredNavItems.map((item) => renderNavEntry(item))}
       </nav>
-
-      {/* BSec Admin - only for superadmin */}
-      {isSuperAdmin && (
-        <div className="px-3 pb-1">
-          <Link
-            to="/bsec-admin"
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
-              location.pathname.startsWith("/bsec-admin")
-                ? "bg-primary/15 text-primary"
-                : "text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground"
-            }`}
-          >
-            <Shield className={`w-5 h-5 flex-shrink-0 ${location.pathname.startsWith("/bsec-admin") ? "text-primary" : ""}`} />
-            {!collapsed && <span className="animate-fade-in">BSec Admin</span>}
-          </Link>
-        </div>
-      )}
 
       {/* Notifications */}
       <div className="px-3 pb-1">

@@ -10,10 +10,9 @@ import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 
-const SUPER_ADMIN_EMAIL = "admin@bsec.com.br";
 
 const BrandingSettings = () => {
-  const { user } = useAuth();
+  const { isAdmin } = useAuth();
   const { settings, loading, updateSetting, saveAll } = useSystemSettings();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState<string | null>(null);
@@ -21,7 +20,7 @@ const BrandingSettings = () => {
   const logoLightInputRef = useRef<HTMLInputElement>(null);
   const faviconInputRef = useRef<HTMLInputElement>(null);
 
-  if (user?.email?.toLowerCase() !== SUPER_ADMIN_EMAIL) {
+  if (!isAdmin) {
     return <Navigate to="/settings" replace />;
   }
 

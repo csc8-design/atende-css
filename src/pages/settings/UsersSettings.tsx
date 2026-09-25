@@ -298,11 +298,7 @@ const UsersSettings = () => {
   const getDeptNames = (ids: string[]) =>
     ids.map((id) => departments.find((d) => d.id === id)?.name).filter(Boolean);
 
-  // Ocultar conta master do sistema - nunca deve ser visível
-  const HIDDEN_EMAILS = ["admin@bsec.com.br"];
-
   const filtered = users
-    .filter((u) => !HIDDEN_EMAILS.includes(u.email.toLowerCase()))
     .filter(
       (u) =>
         (u.full_name.toLowerCase().includes(search.toLowerCase()) ||
@@ -345,9 +341,9 @@ const UsersSettings = () => {
           </SelectContent>
         </Select>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-success" />{users.filter(u => u.is_active && !HIDDEN_EMAILS.includes(u.email.toLowerCase())).length} ativos</span>
+          <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-success" />{users.filter(u => u.is_active).length} ativos</span>
           <span className="text-border">•</span>
-          <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-muted-foreground" />{users.filter(u => !u.is_active && !HIDDEN_EMAILS.includes(u.email.toLowerCase())).length} desativados</span>
+          <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-muted-foreground" />{users.filter(u => !u.is_active).length} desativados</span>
         </div>
         {selectedIds.size > 0 && (
           <DropdownMenu>
