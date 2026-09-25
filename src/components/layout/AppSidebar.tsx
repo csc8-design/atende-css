@@ -36,6 +36,7 @@ import {
   BriefcaseBusiness,
 } from "lucide-react";
 import NotificationBell from "./NotificationBell";
+import { EVOLUTION_ENABLED } from "@/lib/features";
 import brandLogo from "@/assets/logo-placeholder.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
@@ -165,6 +166,7 @@ const AppSidebar = () => {
         if (!c.roles.some((r: string) => roles.includes(r as any))) return false;
         if (c.requiresComercial && !isInComercial) return false;
         if (c.requiresQualEmail && !hasQualEmailAccess) return false;
+        if (c.requiresEvolution && !EVOLUTION_ENABLED) return false;
         return true;
       });
       return { ...item, children: kids };
@@ -173,6 +175,7 @@ const AppSidebar = () => {
       if (!item.roles.some((r: string) => roles.includes(r as any))) return false;
       if (item.requiresComercial && !isInComercial) return false;
       if (item.requiresQualEmail && !hasQualEmailAccess) return false;
+      if (item.requiresEvolution && !EVOLUTION_ENABLED) return false;
       if (item.children && item.children.length === 0) return false;
       return true;
     });

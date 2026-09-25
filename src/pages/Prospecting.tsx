@@ -1153,7 +1153,7 @@ const Prospecting = () => {
                       </div>
 
                       {/* Footer com ações */}
-                      <div className="px-4 py-3 bg-muted/30 border-t border-border/60 grid grid-cols-2 gap-2">
+                      <div className={`px-4 py-3 bg-muted/30 border-t border-border/60 grid ${EVOLUTION_ENABLED ? "grid-cols-2" : "grid-cols-1"} gap-2`}>
                         {EVOLUTION_ENABLED && <button
                           onClick={() => setConfirmLead(l)}
                           disabled={sendingId === l.id}
