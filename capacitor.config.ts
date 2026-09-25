@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Atende CSS · ENGWE',
   webDir: 'dist',
   server: {
-    url: 'https://atendimento.cbmaq.com.br',
+    // url: 'https://SEU-DOMINIO', // defina o domínio publicado do Atende CSS
     cleartext: false,
   },
   plugins: {

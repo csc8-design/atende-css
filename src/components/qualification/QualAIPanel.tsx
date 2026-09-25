@@ -225,7 +225,7 @@ export default function QualAIPanel({ conversation, qualification, analyzing, on
       s?.status === "qualified"
         ? `✔ ${label}\n   ${s.summary || s.evidence || ""}`
         : `○ ${label}  (pendente)`;
-    return `PASSAGEM DE BASTÃO — QUALIFICAÇÃO CBMAQ
+    return `PASSAGEM DE BASTÃO — QUALIFICAÇÃO ENGWE
 
 Data: ${now.toLocaleDateString("pt-BR")}
 Hora: ${now.toLocaleTimeString("pt-BR")}
