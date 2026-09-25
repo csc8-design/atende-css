@@ -49,9 +49,6 @@ verify_jwt = false
 [functions.ai-search-leads]
 verify_jwt = false
 
-[functions.sync-popagro-leads]
-verify_jwt = false
-
 [functions.qual-webhook]
 verify_jwt = false
 
