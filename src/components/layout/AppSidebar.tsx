@@ -37,7 +37,7 @@ import {
 } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import { EVOLUTION_ENABLED } from "@/lib/features";
-import brandLogo from "@/assets/logo-placeholder.svg";
+import cssLogo from "@/assets/css-logo.png.asset.json";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -300,7 +300,9 @@ const AppSidebar = () => {
         className={`h-screen sticky top-0 flex flex-col transition-all duration-300 ${
           collapsed ? "w-[72px]" : "w-[220px]"
         }`}
-        style={{ background: "var(--gradient-sidebar)" }}
+        className={`h-screen sticky top-0 flex flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 ${
+          collapsed ? "w-[72px]" : "w-[220px]"
+        }`}
       >
         {/* Logo */}
         <div className={`flex items-center justify-center h-16 border-b border-sidebar-border overflow-hidden ${collapsed ? "px-3" : "px-0"}`}>
@@ -313,7 +315,7 @@ const AppSidebar = () => {
               </div>
             )
           ) : (
-            <img src={brandLogo} alt="Atende CSS · ENGWE" className="w-full h-full object-cover animate-fade-in" />
+            <img src={cssLogo.url} alt="CSS" className="max-w-[150px] max-h-11 object-contain animate-fade-in" />
           )}
         </div>
 
@@ -393,10 +395,9 @@ const AppSidebar = () => {
   // Admin/Manager: full sidebar
   return (
     <aside
-      className={`h-screen sticky top-0 flex flex-col transition-all duration-300 ${
+      className={`h-screen sticky top-0 flex flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 ${
         collapsed ? "w-[72px]" : "w-[240px]"
       }`}
-      style={{ background: "var(--gradient-sidebar)" }}
     >
       {/* Logo */}
       <div className={`flex items-center justify-center h-16 border-b border-sidebar-border overflow-hidden ${collapsed ? "px-3" : "px-0"}`}>
@@ -409,7 +410,7 @@ const AppSidebar = () => {
             </div>
           )
         ) : (
-          <img src={brandLogo} alt="Atende CSS · ENGWE" className="w-full h-full object-cover animate-fade-in" />
+          <img src={cssLogo.url} alt="CSS" className="max-w-[165px] max-h-12 object-contain animate-fade-in" />
         )}
       </div>
 
