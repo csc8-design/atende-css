@@ -40,6 +40,27 @@ export type Database = {
           },
         ]
       }
+      agent_notification_log: {
+        Row: {
+          agent_id: string
+          conversation_id: string
+          id: string
+          notified_at: string
+        }
+        Insert: {
+          agent_id: string
+          conversation_id: string
+          id?: string
+          notified_at?: string
+        }
+        Update: {
+          agent_id?: string
+          conversation_id?: string
+          id?: string
+          notified_at?: string
+        }
+        Relationships: []
+      }
       ai_suggestions: {
         Row: {
           content: string
@@ -403,6 +424,9 @@ export type Database = {
           assigned_agent_id: string | null
           avatar_url: string | null
           category: Database["public"]["Enums"]["contact_category"] | null
+          chatbot_name: string | null
+          cnpj: string | null
+          company_name: string | null
           created_at: string
           email: string | null
           id: string
@@ -418,6 +442,9 @@ export type Database = {
           assigned_agent_id?: string | null
           avatar_url?: string | null
           category?: Database["public"]["Enums"]["contact_category"] | null
+          chatbot_name?: string | null
+          cnpj?: string | null
+          company_name?: string | null
           created_at?: string
           email?: string | null
           id?: string
@@ -433,6 +460,9 @@ export type Database = {
           assigned_agent_id?: string | null
           avatar_url?: string | null
           category?: Database["public"]["Enums"]["contact_category"] | null
+          chatbot_name?: string | null
+          cnpj?: string | null
+          company_name?: string | null
           created_at?: string
           email?: string | null
           id?: string
@@ -582,6 +612,142 @@ export type Database = {
             columns: ["department_id"]
             isOneToOne: false
             referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_deals: {
+        Row: {
+          assigned_agent_id: string | null
+          company_name: string | null
+          contact_id: string
+          contact_name: string | null
+          conversation_id: string
+          created_at: string
+          estimated_value: number | null
+          id: string
+          last_interaction_at: string
+          next_contact_at: string | null
+          notes: string | null
+          priority: number
+          stage_id: string
+          status: string
+          temperature: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_agent_id?: string | null
+          company_name?: string | null
+          contact_id: string
+          contact_name?: string | null
+          conversation_id: string
+          created_at?: string
+          estimated_value?: number | null
+          id?: string
+          last_interaction_at?: string
+          next_contact_at?: string | null
+          notes?: string | null
+          priority?: number
+          stage_id: string
+          status?: string
+          temperature?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_agent_id?: string | null
+          company_name?: string | null
+          contact_id?: string
+          contact_name?: string | null
+          conversation_id?: string
+          created_at?: string
+          estimated_value?: number | null
+          id?: string
+          last_interaction_at?: string
+          next_contact_at?: string | null
+          notes?: string | null
+          priority?: number
+          stage_id?: string
+          status?: string
+          temperature?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_deals_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "crm_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_stages: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          is_lost: boolean
+          is_won: boolean
+          name: string
+          position: number
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id?: string
+          is_lost?: boolean
+          is_won?: boolean
+          name: string
+          position: number
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          is_lost?: boolean
+          is_won?: boolean
+          name?: string
+          position?: number
+        }
+        Relationships: []
+      }
+      crm_tasks: {
+        Row: {
+          completed: boolean
+          created_at: string
+          created_by: string
+          deal_id: string
+          due_at: string | null
+          id: string
+          title: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          created_by: string
+          deal_id: string
+          due_at?: string | null
+          id?: string
+          title: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          created_by?: string
+          deal_id?: string
+          due_at?: string | null
+          id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_tasks_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "crm_deals"
             referencedColumns: ["id"]
           },
         ]
@@ -852,62 +1018,86 @@ export type Database = {
       prospect_leads: {
         Row: {
           assigned_agent_id: string | null
+          city: string | null
           company_name: string
           contact_id: string | null
           contact_name: string | null
           created_at: string
           created_by: string
           email: string | null
+          equipment_type: string | null
           estimated_value: number | null
+          funnel_stage: string | null
           id: string
           interaction_status: string
           last_interaction_at: string | null
+          loss_reason: string | null
           message_sent_at: string | null
           next_step: string | null
           observations: string | null
           phone: string
+          responsible: string | null
+          role: string | null
           segment: string | null
           source: string
+          source_origin: string | null
+          state: string | null
           updated_at: string
         }
         Insert: {
           assigned_agent_id?: string | null
+          city?: string | null
           company_name: string
           contact_id?: string | null
           contact_name?: string | null
           created_at?: string
           created_by: string
           email?: string | null
+          equipment_type?: string | null
           estimated_value?: number | null
+          funnel_stage?: string | null
           id?: string
           interaction_status?: string
           last_interaction_at?: string | null
+          loss_reason?: string | null
           message_sent_at?: string | null
           next_step?: string | null
           observations?: string | null
           phone: string
+          responsible?: string | null
+          role?: string | null
           segment?: string | null
           source?: string
+          source_origin?: string | null
+          state?: string | null
           updated_at?: string
         }
         Update: {
           assigned_agent_id?: string | null
+          city?: string | null
           company_name?: string
           contact_id?: string | null
           contact_name?: string | null
           created_at?: string
           created_by?: string
           email?: string | null
+          equipment_type?: string | null
           estimated_value?: number | null
+          funnel_stage?: string | null
           id?: string
           interaction_status?: string
           last_interaction_at?: string | null
+          loss_reason?: string | null
           message_sent_at?: string | null
           next_step?: string | null
           observations?: string | null
           phone?: string
+          responsible?: string | null
+          role?: string | null
           segment?: string | null
           source?: string
+          source_origin?: string | null
+          state?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1157,10 +1347,15 @@ export type Database = {
     }
     Functions: {
       cleanup_old_messages: { Args: never; Returns: undefined }
+      close_conversation: {
+        Args: { _closing_reason: string; _conversation_id: string }
+        Returns: undefined
+      }
       get_or_create_dm_channel: {
         Args: { other_user_id: string }
         Returns: string
       }
+      has_crm_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
