@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useBranding } from "@/hooks/useBranding";
-import { Zap } from "lucide-react";
+import cssLogo from "@/assets/css-logo.png.asset.json";
 
 const Auth = () => {
   const { signIn, signUp } = useAuth();
@@ -40,42 +40,26 @@ const Auth = () => {
     setLoading(false);
   };
 
-  const hasLogo = branding.logo_light_url || branding.logo_url;
+  const activeLogo = branding.logo_light_url || branding.logo_url || cssLogo.url;
 
   return (
     <div className="min-h-screen flex">
       {/* Left side - branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center" style={{ background: `linear-gradient(135deg, hsl(${branding.login_bg_color}), hsl(214, 40%, 95%))` }}>
-        {/* Decorative circles */}
-        <div className="absolute -top-20 right-10 w-64 h-64 rounded-full opacity-20" style={{ background: "hsl(214, 40%, 82%)" }} />
-        <div className="absolute -bottom-16 -left-16 w-72 h-72 rounded-full opacity-15" style={{ background: "hsl(214, 40%, 80%)" }} />
-        <div className="absolute top-1/3 -left-10 w-48 h-48 rounded-full opacity-10" style={{ background: "hsl(214, 40%, 78%)" }} />
-
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center bg-background border-r border-border">
         <div className="relative z-10 text-center px-12 max-w-md">
-          {hasLogo ? (
-            <img src={branding.logo_light_url || branding.logo_url} alt={`${branding.platform_name} Logo`} className="max-w-[320px] mx-auto mb-8" />
-          ) : (
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <div className="w-14 h-14 rounded-xl bg-primary flex items-center justify-center">
-                <Zap className="w-8 h-8 text-primary-foreground" />
-              </div>
-              <span className="text-4xl font-bold" style={{ color: "hsl(215, 55%, 28%)" }}>
-                {branding.platform_name}
-              </span>
-            </div>
-          )}
-          <p className="text-base leading-relaxed mb-8" style={{ color: "hsl(215, 30%, 45%)" }}>
+          <img src={activeLogo} alt={`${branding.platform_name} Logo`} className="max-w-[280px] max-h-28 object-contain mx-auto mb-8" />
+          <p className="text-base leading-relaxed mb-8 text-muted-foreground">
             {branding.platform_description}
           </p>
 
           <div className="flex gap-4 justify-center">
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl px-6 py-4 shadow-sm">
-              <p className="text-2xl font-bold" style={{ color: "hsl(215, 55%, 28%)" }}>100%</p>
-              <p className="text-xs mt-0.5" style={{ color: "hsl(215, 30%, 50%)" }}>Rastreabilidade</p>
+            <div className="bg-card rounded-xl border border-border px-6 py-4 shadow-sm">
+              <p className="text-2xl font-bold text-primary">100%</p>
+              <p className="text-xs mt-0.5 text-muted-foreground">Rastreabilidade</p>
             </div>
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl px-6 py-4 shadow-sm">
-              <p className="text-2xl font-bold" style={{ color: "hsl(215, 55%, 28%)" }}>24/7</p>
-              <p className="text-xs mt-0.5" style={{ color: "hsl(215, 30%, 50%)" }}>Disponível</p>
+            <div className="bg-card rounded-xl border border-border px-6 py-4 shadow-sm">
+              <p className="text-2xl font-bold text-primary">24/7</p>
+              <p className="text-xs mt-0.5 text-muted-foreground">Disponível</p>
             </div>
           </div>
         </div>
@@ -155,8 +139,7 @@ const Auth = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 rounded-lg font-semibold text-sm text-white transition-opacity disabled:opacity-50 hover:opacity-90"
-                style={{ background: "hsl(215, 55%, 28%)" }}
+                className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-sm transition-opacity disabled:opacity-50 hover:opacity-90"
               >
                 {loading ? "Aguarde..." : "Entrar"}
               </button>
@@ -180,8 +163,7 @@ const Auth = () => {
                   setError("");
                   setSuccess("");
                 }}
-                className="font-semibold hover:underline"
-                style={{ color: "hsl(215, 55%, 28%)" }}
+                className="font-semibold text-primary hover:underline"
               >
                 {isLogin ? "Cadastre-se" : "Faça login"}
               </button>

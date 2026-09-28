@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import cssLogo from "@/assets/css-logo.png.asset.json";
 
 export interface BrandingConfig {
   platform_name: string;
@@ -17,8 +18,8 @@ export interface BrandingConfig {
 const DEFAULTS: BrandingConfig = {
   platform_name: "Atende CSS · ENGWE",
   platform_description: "Gestão integrada de conversas, atendentes e clientes via WhatsApp Business.",
-  logo_url: "",
-  logo_light_url: "",
+  logo_url: cssLogo.url,
+  logo_light_url: cssLogo.url,
   favicon_url: "",
   login_bg_color: "214, 32%, 91%",
   login_text: "Entre com seu e-mail corporativo",
