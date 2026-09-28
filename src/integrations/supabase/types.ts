@@ -40,6 +40,144 @@ export type Database = {
           },
         ]
       }
+      campaign_contacts: {
+        Row: {
+          campaign_id: string
+          contact_id: string
+          created_at: string
+          delivered_at: string | null
+          error_message: string | null
+          id: string
+          read_at: string | null
+          replied_at: string | null
+          sent_at: string | null
+          status: string
+          whatsapp_message_id: string | null
+        }
+        Insert: {
+          campaign_id: string
+          contact_id: string
+          created_at?: string
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          read_at?: string | null
+          replied_at?: string | null
+          sent_at?: string | null
+          status?: string
+          whatsapp_message_id?: string | null
+        }
+        Update: {
+          campaign_id?: string
+          contact_id?: string
+          created_at?: string
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          read_at?: string | null
+          replied_at?: string | null
+          sent_at?: string | null
+          status?: string
+          whatsapp_message_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_contacts_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaign_contacts_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaigns: {
+        Row: {
+          batch_delay_seconds: number | null
+          batch_size: number | null
+          channel: string
+          completed_at: string | null
+          created_at: string
+          created_by: string
+          delivered_count: number | null
+          description: string | null
+          failed_count: number | null
+          id: string
+          name: string
+          read_count: number | null
+          replied_count: number | null
+          scheduled_at: string | null
+          send_rate_per_second: number | null
+          sent_count: number | null
+          started_at: string | null
+          status: string
+          template_category: string | null
+          template_components: Json | null
+          template_language: string | null
+          template_name: string | null
+          total_contacts: number | null
+          updated_at: string
+        }
+        Insert: {
+          batch_delay_seconds?: number | null
+          batch_size?: number | null
+          channel?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by: string
+          delivered_count?: number | null
+          description?: string | null
+          failed_count?: number | null
+          id?: string
+          name: string
+          read_count?: number | null
+          replied_count?: number | null
+          scheduled_at?: string | null
+          send_rate_per_second?: number | null
+          sent_count?: number | null
+          started_at?: string | null
+          status?: string
+          template_category?: string | null
+          template_components?: Json | null
+          template_language?: string | null
+          template_name?: string | null
+          total_contacts?: number | null
+          updated_at?: string
+        }
+        Update: {
+          batch_delay_seconds?: number | null
+          batch_size?: number | null
+          channel?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string
+          delivered_count?: number | null
+          description?: string | null
+          failed_count?: number | null
+          id?: string
+          name?: string
+          read_count?: number | null
+          replied_count?: number | null
+          scheduled_at?: string | null
+          send_rate_per_second?: number | null
+          sent_count?: number | null
+          started_at?: string | null
+          status?: string
+          template_category?: string | null
+          template_components?: Json | null
+          template_language?: string | null
+          template_name?: string | null
+          total_contacts?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       channel_members: {
         Row: {
           channel_id: string
@@ -197,6 +335,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      closing_reasons: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          usage_count: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          usage_count?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          usage_count?: number
+        }
+        Relationships: []
       }
       contacts: {
         Row: {
@@ -852,6 +1017,15 @@ export type Database = {
       is_channel_member: {
         Args: { _channel_id: string; _user_id: string }
         Returns: boolean
+      }
+      transfer_conversation: {
+        Args: {
+          _agent_id?: string
+          _conversation_id: string
+          _department_id: string
+          _status?: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
