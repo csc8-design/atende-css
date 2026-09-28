@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.1"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
@@ -1034,96 +1034,6 @@ export type Database = {
           },
         ]
       }
-      leads_popagro: {
-        Row: {
-          atualizado_em: string | null
-          cidade: string | null
-          cnpj: string | null
-          condicao: string | null
-          created_at: string
-          dados_json: Json | null
-          data_lead: string | null
-          email: string | null
-          empresa: string | null
-          id: string
-          mensagem: string | null
-          nome: string | null
-          popagro_id: string
-          produto_ano: string | null
-          produto_foto: string | null
-          produto_id: string | null
-          produto_marca: string | null
-          produto_modelo: string | null
-          produto_nome: string | null
-          produto_url: string | null
-          produto_valor: number | null
-          qualificado: boolean | null
-          status: string | null
-          telefone: string | null
-          tipo_negociacao: string | null
-          uf: string | null
-          updated_at: string
-        }
-        Insert: {
-          atualizado_em?: string | null
-          cidade?: string | null
-          cnpj?: string | null
-          condicao?: string | null
-          created_at?: string
-          dados_json?: Json | null
-          data_lead?: string | null
-          email?: string | null
-          empresa?: string | null
-          id?: string
-          mensagem?: string | null
-          nome?: string | null
-          popagro_id: string
-          produto_ano?: string | null
-          produto_foto?: string | null
-          produto_id?: string | null
-          produto_marca?: string | null
-          produto_modelo?: string | null
-          produto_nome?: string | null
-          produto_url?: string | null
-          produto_valor?: number | null
-          qualificado?: boolean | null
-          status?: string | null
-          telefone?: string | null
-          tipo_negociacao?: string | null
-          uf?: string | null
-          updated_at?: string
-        }
-        Update: {
-          atualizado_em?: string | null
-          cidade?: string | null
-          cnpj?: string | null
-          condicao?: string | null
-          created_at?: string
-          dados_json?: Json | null
-          data_lead?: string | null
-          email?: string | null
-          empresa?: string | null
-          id?: string
-          mensagem?: string | null
-          nome?: string | null
-          popagro_id?: string
-          produto_ano?: string | null
-          produto_foto?: string | null
-          produto_id?: string | null
-          produto_marca?: string | null
-          produto_modelo?: string | null
-          produto_nome?: string | null
-          produto_url?: string | null
-          produto_valor?: number | null
-          qualificado?: boolean | null
-          status?: string | null
-          telefone?: string | null
-          tipo_negociacao?: string | null
-          uf?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
       mass_campaign_leads: {
         Row: {
           campaign_id: string
@@ -1916,175 +1826,6 @@ export type Database = {
         }
         Relationships: []
       }
-      tenant_api_configs: {
-        Row: {
-          config_key: string
-          config_value: string
-          created_at: string | null
-          id: string
-          is_active: boolean | null
-          provider: string
-          tenant_id: string
-          updated_at: string | null
-        }
-        Insert: {
-          config_key: string
-          config_value: string
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          provider?: string
-          tenant_id: string
-          updated_at?: string | null
-        }
-        Update: {
-          config_key?: string
-          config_value?: string
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          provider?: string
-          tenant_id?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tenant_api_configs_tenant_id_fkey"
-            columns: ["tenant_id"]
-            isOneToOne: false
-            referencedRelation: "tenants"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tenant_payments: {
-        Row: {
-          amount: number
-          created_at: string | null
-          currency: string | null
-          description: string | null
-          due_date: string | null
-          id: string
-          invoice_url: string | null
-          notes: string | null
-          paid_at: string | null
-          payment_method: string | null
-          reference_month: string | null
-          status: string | null
-          tenant_id: string
-          updated_at: string | null
-        }
-        Insert: {
-          amount: number
-          created_at?: string | null
-          currency?: string | null
-          description?: string | null
-          due_date?: string | null
-          id?: string
-          invoice_url?: string | null
-          notes?: string | null
-          paid_at?: string | null
-          payment_method?: string | null
-          reference_month?: string | null
-          status?: string | null
-          tenant_id: string
-          updated_at?: string | null
-        }
-        Update: {
-          amount?: number
-          created_at?: string | null
-          currency?: string | null
-          description?: string | null
-          due_date?: string | null
-          id?: string
-          invoice_url?: string | null
-          notes?: string | null
-          paid_at?: string | null
-          payment_method?: string | null
-          reference_month?: string | null
-          status?: string | null
-          tenant_id?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tenant_payments_tenant_id_fkey"
-            columns: ["tenant_id"]
-            isOneToOne: false
-            referencedRelation: "tenants"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tenants: {
-        Row: {
-          created_at: string | null
-          custom_domain: string | null
-          document: string | null
-          email: string | null
-          favicon_url: string | null
-          id: string
-          is_active: boolean | null
-          login_subtitle: string | null
-          login_title: string | null
-          logo_url: string | null
-          max_conversations: number | null
-          max_users: number | null
-          name: string
-          notes: string | null
-          phone: string | null
-          plan: string | null
-          platform_name: string | null
-          primary_color: string | null
-          slug: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          custom_domain?: string | null
-          document?: string | null
-          email?: string | null
-          favicon_url?: string | null
-          id?: string
-          is_active?: boolean | null
-          login_subtitle?: string | null
-          login_title?: string | null
-          logo_url?: string | null
-          max_conversations?: number | null
-          max_users?: number | null
-          name: string
-          notes?: string | null
-          phone?: string | null
-          plan?: string | null
-          platform_name?: string | null
-          primary_color?: string | null
-          slug: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          custom_domain?: string | null
-          document?: string | null
-          email?: string | null
-          favicon_url?: string | null
-          id?: string
-          is_active?: boolean | null
-          login_subtitle?: string | null
-          login_title?: string | null
-          logo_url?: string | null
-          max_conversations?: number | null
-          max_users?: number | null
-          name?: string
-          notes?: string | null
-          phone?: string | null
-          plan?: string | null
-          platform_name?: string | null
-          primary_color?: string | null
-          slug?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       user_roles: {
         Row: {
           id: string
@@ -2177,12 +1918,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -2206,11 +1947,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -2231,11 +1972,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -2256,11 +1997,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -2273,11 +2014,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
