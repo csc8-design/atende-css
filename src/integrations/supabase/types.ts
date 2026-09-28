@@ -40,6 +40,41 @@ export type Database = {
           },
         ]
       }
+      ai_suggestions: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          is_used: boolean
+          suggestion_type: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          is_used?: boolean
+          suggestion_type?: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          is_used?: boolean
+          suggestion_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_suggestions_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       campaign_contacts: {
         Row: {
           campaign_id: string
@@ -367,6 +402,7 @@ export type Database = {
         Row: {
           assigned_agent_id: string | null
           avatar_url: string | null
+          category: Database["public"]["Enums"]["contact_category"] | null
           created_at: string
           email: string | null
           id: string
@@ -381,6 +417,7 @@ export type Database = {
         Insert: {
           assigned_agent_id?: string | null
           avatar_url?: string | null
+          category?: Database["public"]["Enums"]["contact_category"] | null
           created_at?: string
           email?: string | null
           id?: string
@@ -395,6 +432,7 @@ export type Database = {
         Update: {
           assigned_agent_id?: string | null
           avatar_url?: string | null
+          category?: Database["public"]["Enums"]["contact_category"] | null
           created_at?: string
           email?: string | null
           id?: string
@@ -472,6 +510,7 @@ export type Database = {
       }
       conversations: {
         Row: {
+          ai_summary: string | null
           assigned_agent_id: string | null
           channel: Database["public"]["Enums"]["conversation_channel"]
           closed_at: string | null
@@ -481,13 +520,17 @@ export type Database = {
           department_id: string | null
           id: string
           last_message_at: string | null
+          lead_score: string | null
           priority: number
+          sentiment: string | null
+          sentiment_score: number | null
           status: Database["public"]["Enums"]["conversation_status"]
           subject: string | null
           unread_count: number
           updated_at: string
         }
         Insert: {
+          ai_summary?: string | null
           assigned_agent_id?: string | null
           channel?: Database["public"]["Enums"]["conversation_channel"]
           closed_at?: string | null
@@ -497,13 +540,17 @@ export type Database = {
           department_id?: string | null
           id?: string
           last_message_at?: string | null
+          lead_score?: string | null
           priority?: number
+          sentiment?: string | null
+          sentiment_score?: number | null
           status?: Database["public"]["Enums"]["conversation_status"]
           subject?: string | null
           unread_count?: number
           updated_at?: string
         }
         Update: {
+          ai_summary?: string | null
           assigned_agent_id?: string | null
           channel?: Database["public"]["Enums"]["conversation_channel"]
           closed_at?: string | null
@@ -513,7 +560,10 @@ export type Database = {
           department_id?: string | null
           id?: string
           last_message_at?: string | null
+          lead_score?: string | null
           priority?: number
+          sentiment?: string | null
+          sentiment_score?: number | null
           status?: Database["public"]["Enums"]["conversation_status"]
           subject?: string | null
           unread_count?: number
@@ -557,6 +607,39 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+        }
+        Relationships: []
+      }
+      google_calendar_tokens: {
+        Row: {
+          access_token: string
+          calendar_id: string | null
+          created_at: string
+          id: string
+          refresh_token: string
+          token_expires_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          calendar_id?: string | null
+          created_at?: string
+          id?: string
+          refresh_token: string
+          token_expires_at: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          calendar_id?: string | null
+          created_at?: string
+          id?: string
+          refresh_token?: string
+          token_expires_at?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -766,6 +849,77 @@ export type Database = {
         }
         Relationships: []
       }
+      prospect_leads: {
+        Row: {
+          assigned_agent_id: string | null
+          company_name: string
+          contact_id: string | null
+          contact_name: string | null
+          created_at: string
+          created_by: string
+          email: string | null
+          estimated_value: number | null
+          id: string
+          interaction_status: string
+          last_interaction_at: string | null
+          message_sent_at: string | null
+          next_step: string | null
+          observations: string | null
+          phone: string
+          segment: string | null
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_agent_id?: string | null
+          company_name: string
+          contact_id?: string | null
+          contact_name?: string | null
+          created_at?: string
+          created_by: string
+          email?: string | null
+          estimated_value?: number | null
+          id?: string
+          interaction_status?: string
+          last_interaction_at?: string | null
+          message_sent_at?: string | null
+          next_step?: string | null
+          observations?: string | null
+          phone: string
+          segment?: string | null
+          source?: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_agent_id?: string | null
+          company_name?: string
+          contact_id?: string | null
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string
+          email?: string | null
+          estimated_value?: number | null
+          id?: string
+          interaction_status?: string
+          last_interaction_at?: string | null
+          message_sent_at?: string | null
+          next_step?: string | null
+          observations?: string | null
+          phone?: string
+          segment?: string | null
+          source?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospect_leads_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quick_replies: {
         Row: {
           content: string
@@ -880,6 +1034,7 @@ export type Database = {
           department_id: string | null
           description: string | null
           duration_minutes: number
+          google_event_id: string | null
           id: string
           notes: string | null
           schedule_type: string
@@ -896,6 +1051,7 @@ export type Database = {
           department_id?: string | null
           description?: string | null
           duration_minutes?: number
+          google_event_id?: string | null
           id?: string
           notes?: string | null
           schedule_type?: string
@@ -912,6 +1068,7 @@ export type Database = {
           department_id?: string | null
           description?: string | null
           duration_minutes?: number
+          google_event_id?: string | null
           id?: string
           notes?: string | null
           schedule_type?: string
@@ -999,6 +1156,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_old_messages: { Args: never; Returns: undefined }
       get_or_create_dm_channel: {
         Args: { other_user_id: string }
         Returns: string
@@ -1031,6 +1189,7 @@ export type Database = {
     Enums: {
       app_role: "admin" | "manager" | "agent"
       channel_type: "group" | "direct" | "department"
+      contact_category: "bronze" | "prata" | "ouro" | "diamante" | "vip"
       conversation_channel: "whatsapp" | "instagram" | "telegram" | "webchat"
       conversation_status: "open" | "pending" | "resolved" | "closed"
       message_sender_type: "contact" | "agent" | "system"
@@ -1171,6 +1330,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "manager", "agent"],
       channel_type: ["group", "direct", "department"],
+      contact_category: ["bronze", "prata", "ouro", "diamante", "vip"],
       conversation_channel: ["whatsapp", "instagram", "telegram", "webchat"],
       conversation_status: ["open", "pending", "resolved", "closed"],
       message_sender_type: ["contact", "agent", "system"],
