@@ -44,6 +44,8 @@ export type Database = {
         Row: {
           channel_id: string
           id: string
+          is_favorite: boolean
+          is_pinned: boolean
           joined_at: string
           last_read_at: string | null
           role: string
@@ -52,6 +54,8 @@ export type Database = {
         Insert: {
           channel_id: string
           id?: string
+          is_favorite?: boolean
+          is_pinned?: boolean
           joined_at?: string
           last_read_at?: string | null
           role?: string
@@ -60,6 +64,8 @@ export type Database = {
         Update: {
           channel_id?: string
           id?: string
+          is_favorite?: boolean
+          is_pinned?: boolean
           joined_at?: string
           last_read_at?: string | null
           role?: string
@@ -84,6 +90,7 @@ export type Database = {
           id: string
           is_active: boolean
           max_tokens: number | null
+          menu_options: Json | null
           model: string
           name: string
           system_prompt: string
@@ -100,6 +107,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           max_tokens?: number | null
+          menu_options?: Json | null
           model?: string
           name: string
           system_prompt?: string
@@ -116,6 +124,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           max_tokens?: number | null
+          menu_options?: Json | null
           model?: string
           name?: string
           system_prompt?: string
@@ -429,6 +438,8 @@ export type Database = {
           created_at: string
           id: string
           is_edited: boolean
+          media_url: string | null
+          message_type: string
           reply_to_id: string | null
           sender_id: string
           updated_at: string
@@ -439,6 +450,8 @@ export type Database = {
           created_at?: string
           id?: string
           is_edited?: boolean
+          media_url?: string | null
+          message_type?: string
           reply_to_id?: string | null
           sender_id: string
           updated_at?: string
@@ -449,6 +462,8 @@ export type Database = {
           created_at?: string
           id?: string
           is_edited?: boolean
+          media_url?: string | null
+          message_type?: string
           reply_to_id?: string | null
           sender_id?: string
           updated_at?: string
@@ -519,6 +534,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          reference_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          reference_id?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          reference_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -594,6 +642,154 @@ export type Database = {
           },
         ]
       }
+      satisfaction_ratings: {
+        Row: {
+          agent_id: string | null
+          comment: string | null
+          contact_id: string
+          conversation_id: string
+          created_at: string
+          department_id: string | null
+          id: string
+          rating: number | null
+          requested_at: string
+          responded_at: string | null
+          whatsapp_message_id: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          comment?: string | null
+          contact_id: string
+          conversation_id: string
+          created_at?: string
+          department_id?: string | null
+          id?: string
+          rating?: number | null
+          requested_at?: string
+          responded_at?: string | null
+          whatsapp_message_id?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          comment?: string | null
+          contact_id?: string
+          conversation_id?: string
+          created_at?: string
+          department_id?: string | null
+          id?: string
+          rating?: number | null
+          requested_at?: string
+          responded_at?: string | null
+          whatsapp_message_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "satisfaction_ratings_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "satisfaction_ratings_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "satisfaction_ratings_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      schedules: {
+        Row: {
+          agent_id: string
+          contact_id: string | null
+          created_at: string
+          created_by: string
+          department_id: string | null
+          description: string | null
+          duration_minutes: number
+          id: string
+          notes: string | null
+          schedule_type: string
+          scheduled_at: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          agent_id: string
+          contact_id?: string | null
+          created_at?: string
+          created_by: string
+          department_id?: string | null
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          notes?: string | null
+          schedule_type?: string
+          scheduled_at: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string
+          contact_id?: string | null
+          created_at?: string
+          created_by?: string
+          department_id?: string | null
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          notes?: string | null
+          schedule_type?: string
+          scheduled_at?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedules_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schedules_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      system_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
       tags: {
         Row: {
           color: string
@@ -647,6 +843,14 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_channel_admin: {
+        Args: { _channel_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_channel_member: {
+        Args: { _channel_id: string; _user_id: string }
         Returns: boolean
       }
     }
