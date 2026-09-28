@@ -419,60 +419,131 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_interests: {
+        Row: {
+          brands: string[]
+          contact_id: string
+          created_at: string
+          interest: string | null
+          interest_type: string | null
+          last_analyzed_at: string | null
+          last_message_at: string | null
+          models: string[]
+          updated_at: string
+        }
+        Insert: {
+          brands?: string[]
+          contact_id: string
+          created_at?: string
+          interest?: string | null
+          interest_type?: string | null
+          last_analyzed_at?: string | null
+          last_message_at?: string | null
+          models?: string[]
+          updated_at?: string
+        }
+        Update: {
+          brands?: string[]
+          contact_id?: string
+          created_at?: string
+          interest?: string | null
+          interest_type?: string | null
+          last_analyzed_at?: string | null
+          last_message_at?: string | null
+          models?: string[]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_interests_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: true
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contacts: {
         Row: {
+          address: string | null
           assigned_agent_id: string | null
           avatar_url: string | null
           category: Database["public"]["Enums"]["contact_category"] | null
           chatbot_name: string | null
+          city: string | null
           cnpj: string | null
           company_name: string | null
           created_at: string
+          desired_equipment: string | null
           email: string | null
           id: string
+          interest_type: string | null
           is_active: boolean
+          is_reseller: boolean | null
           name: string
           notes: string | null
+          part_of_interest: string | null
           phone: string
+          segment: string | null
+          state: string | null
           tags: string[] | null
           updated_at: string
           whatsapp_id: string | null
+          zip_code: string | null
         }
         Insert: {
+          address?: string | null
           assigned_agent_id?: string | null
           avatar_url?: string | null
           category?: Database["public"]["Enums"]["contact_category"] | null
           chatbot_name?: string | null
+          city?: string | null
           cnpj?: string | null
           company_name?: string | null
           created_at?: string
+          desired_equipment?: string | null
           email?: string | null
           id?: string
+          interest_type?: string | null
           is_active?: boolean
+          is_reseller?: boolean | null
           name: string
           notes?: string | null
+          part_of_interest?: string | null
           phone: string
+          segment?: string | null
+          state?: string | null
           tags?: string[] | null
           updated_at?: string
           whatsapp_id?: string | null
+          zip_code?: string | null
         }
         Update: {
+          address?: string | null
           assigned_agent_id?: string | null
           avatar_url?: string | null
           category?: Database["public"]["Enums"]["contact_category"] | null
           chatbot_name?: string | null
+          city?: string | null
           cnpj?: string | null
           company_name?: string | null
           created_at?: string
+          desired_equipment?: string | null
           email?: string | null
           id?: string
+          interest_type?: string | null
           is_active?: boolean
+          is_reseller?: boolean | null
           name?: string
           notes?: string | null
+          part_of_interest?: string | null
           phone?: string
+          segment?: string | null
+          state?: string | null
           tags?: string[] | null
           updated_at?: string
           whatsapp_id?: string | null
+          zip_code?: string | null
         }
         Relationships: []
       }
@@ -501,6 +572,38 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "conversation_notes_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversation_reply_alerts: {
+        Row: {
+          conversation_id: string
+          id: string
+          last_message_at: string
+          level: string
+          notified_at: string
+        }
+        Insert: {
+          conversation_id: string
+          id?: string
+          last_message_at: string
+          level: string
+          notified_at?: string
+        }
+        Update: {
+          conversation_id?: string
+          id?: string
+          last_message_at?: string
+          level?: string
+          notified_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_reply_alerts_conversation_id_fkey"
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
@@ -752,6 +855,38 @@ export type Database = {
           },
         ]
       }
+      department_whatsapp_groups: {
+        Row: {
+          created_at: string
+          department_id: string
+          group_jid: string
+          group_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department_id: string
+          group_jid: string
+          group_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department_id?: string
+          group_jid?: string
+          group_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "department_whatsapp_groups_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: true
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       departments: {
         Row: {
           created_at: string
@@ -895,6 +1030,193 @@ export type Database = {
             columns: ["reply_to_id"]
             isOneToOne: false
             referencedRelation: "internal_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mass_campaign_leads: {
+        Row: {
+          campaign_id: string
+          cidade: string | null
+          created_at: string
+          email: string | null
+          empresa: string | null
+          error_message: string | null
+          evolution_message_id: string | null
+          extra: Json | null
+          final_message: string | null
+          first_sent_at: string | null
+          fonte: string | null
+          id: string
+          manual_handoff: boolean
+          manual_handoff_at: string | null
+          manual_replied: boolean
+          modelo: string | null
+          nome: string | null
+          prioridade: string | null
+          replied_at: string | null
+          score: number | null
+          segmento: string | null
+          sent_at: string | null
+          status: string
+          telefone: string
+          telefone_normalizado: string | null
+          uf: string | null
+          updated_at: string
+        }
+        Insert: {
+          campaign_id: string
+          cidade?: string | null
+          created_at?: string
+          email?: string | null
+          empresa?: string | null
+          error_message?: string | null
+          evolution_message_id?: string | null
+          extra?: Json | null
+          final_message?: string | null
+          first_sent_at?: string | null
+          fonte?: string | null
+          id?: string
+          manual_handoff?: boolean
+          manual_handoff_at?: string | null
+          manual_replied?: boolean
+          modelo?: string | null
+          nome?: string | null
+          prioridade?: string | null
+          replied_at?: string | null
+          score?: number | null
+          segmento?: string | null
+          sent_at?: string | null
+          status?: string
+          telefone: string
+          telefone_normalizado?: string | null
+          uf?: string | null
+          updated_at?: string
+        }
+        Update: {
+          campaign_id?: string
+          cidade?: string | null
+          created_at?: string
+          email?: string | null
+          empresa?: string | null
+          error_message?: string | null
+          evolution_message_id?: string | null
+          extra?: Json | null
+          final_message?: string | null
+          first_sent_at?: string | null
+          fonte?: string | null
+          id?: string
+          manual_handoff?: boolean
+          manual_handoff_at?: string | null
+          manual_replied?: boolean
+          modelo?: string | null
+          nome?: string | null
+          prioridade?: string | null
+          replied_at?: string | null
+          score?: number | null
+          segmento?: string | null
+          sent_at?: string | null
+          status?: string
+          telefone?: string
+          telefone_normalizado?: string | null
+          uf?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mass_campaign_leads_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "mass_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mass_campaigns: {
+        Row: {
+          channel: string
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          evolution_instance: string
+          failed_count: number
+          handoff_department_id: string | null
+          id: string
+          media_mime: string | null
+          media_type: string | null
+          media_url: string | null
+          message_template: string | null
+          meta_header_media_url: string | null
+          meta_template_language: string | null
+          meta_template_name: string | null
+          name: string
+          replied_count: number
+          segment: string
+          sent_count: number
+          started_at: string | null
+          status: string
+          throttle_ms: number
+          total_leads: number
+          updated_at: string
+        }
+        Insert: {
+          channel?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          evolution_instance?: string
+          failed_count?: number
+          handoff_department_id?: string | null
+          id?: string
+          media_mime?: string | null
+          media_type?: string | null
+          media_url?: string | null
+          message_template?: string | null
+          meta_header_media_url?: string | null
+          meta_template_language?: string | null
+          meta_template_name?: string | null
+          name: string
+          replied_count?: number
+          segment: string
+          sent_count?: number
+          started_at?: string | null
+          status?: string
+          throttle_ms?: number
+          total_leads?: number
+          updated_at?: string
+        }
+        Update: {
+          channel?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          evolution_instance?: string
+          failed_count?: number
+          handoff_department_id?: string | null
+          id?: string
+          media_mime?: string | null
+          media_type?: string | null
+          media_url?: string | null
+          message_template?: string | null
+          meta_header_media_url?: string | null
+          meta_template_language?: string | null
+          meta_template_name?: string | null
+          name?: string
+          replied_count?: number
+          segment?: string
+          sent_count?: number
+          started_at?: string | null
+          status?: string
+          throttle_ms?: number
+          total_leads?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mass_campaigns_handoff_department_id_fkey"
+            columns: ["handoff_department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
             referencedColumns: ["id"]
           },
         ]
@@ -1106,6 +1428,187 @@ export type Database = {
             columns: ["contact_id"]
             isOneToOne: false
             referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prospecting_templates: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      qual_conversations: {
+        Row: {
+          archived: boolean
+          assigned_agent_id: string | null
+          contact_avatar_url: string | null
+          contact_name: string | null
+          created_at: string
+          evolution_instance: string | null
+          finished_at: string | null
+          finished_by: string | null
+          handoff_summary: string | null
+          id: string
+          last_message_at: string | null
+          last_message_preview: string | null
+          metadata: Json
+          phone: string
+          status: string
+          unread_count: number
+          updated_at: string
+        }
+        Insert: {
+          archived?: boolean
+          assigned_agent_id?: string | null
+          contact_avatar_url?: string | null
+          contact_name?: string | null
+          created_at?: string
+          evolution_instance?: string | null
+          finished_at?: string | null
+          finished_by?: string | null
+          handoff_summary?: string | null
+          id?: string
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          metadata?: Json
+          phone: string
+          status?: string
+          unread_count?: number
+          updated_at?: string
+        }
+        Update: {
+          archived?: boolean
+          assigned_agent_id?: string | null
+          contact_avatar_url?: string | null
+          contact_name?: string | null
+          created_at?: string
+          evolution_instance?: string | null
+          finished_at?: string | null
+          finished_by?: string | null
+          handoff_summary?: string | null
+          id?: string
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          metadata?: Json
+          phone?: string
+          status?: string
+          unread_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      qual_lead_qualification: {
+        Row: {
+          ai_summary: string | null
+          conversation_id: string
+          criteria: Json
+          disqualified: boolean
+          last_analyzed_at: string | null
+          last_message_count: number
+          lead_data: Json
+          score: number
+          updated_at: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          conversation_id: string
+          criteria?: Json
+          disqualified?: boolean
+          last_analyzed_at?: string | null
+          last_message_count?: number
+          lead_data?: Json
+          score?: number
+          updated_at?: string
+        }
+        Update: {
+          ai_summary?: string | null
+          conversation_id?: string
+          criteria?: Json
+          disqualified?: boolean
+          last_analyzed_at?: string | null
+          last_message_count?: number
+          lead_data?: Json
+          score?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qual_lead_qualification_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: true
+            referencedRelation: "qual_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      qual_messages: {
+        Row: {
+          content: string | null
+          conversation_id: string
+          created_at: string
+          direction: string
+          evolution_message_id: string | null
+          id: string
+          media_type: string | null
+          media_url: string | null
+          metadata: Json
+          sender_name: string | null
+          sent_at: string
+        }
+        Insert: {
+          content?: string | null
+          conversation_id: string
+          created_at?: string
+          direction: string
+          evolution_message_id?: string | null
+          id?: string
+          media_type?: string | null
+          media_url?: string | null
+          metadata?: Json
+          sender_name?: string | null
+          sent_at?: string
+        }
+        Update: {
+          content?: string | null
+          conversation_id?: string
+          created_at?: string
+          direction?: string
+          evolution_message_id?: string | null
+          id?: string
+          media_type?: string | null
+          media_url?: string | null
+          metadata?: Json
+          sender_name?: string | null
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qual_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "qual_conversations"
             referencedColumns: ["id"]
           },
         ]
@@ -1370,6 +1873,10 @@ export type Database = {
       is_channel_member: {
         Args: { _channel_id: string; _user_id: string }
         Returns: boolean
+      }
+      recalc_mass_campaign_counters: {
+        Args: { _campaign_id: string }
+        Returns: undefined
       }
       transfer_conversation: {
         Args: {
