@@ -101,7 +101,7 @@ export function useSchedules() {
   const updateSchedule = async (id: string, updates: Partial<Schedule>) => {
     const { error } = await supabase
       .from("schedules")
-      .update(updates)
+      .update((({ agent_profile, contact, ...rest }: any) => rest)(updates))
       .eq("id", id);
 
     if (error) {
