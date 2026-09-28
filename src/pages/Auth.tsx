@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useBranding } from "@/hooks/useBranding";
-import { Zap } from "lucide-react";
 import cssLogo from "@/assets/css-logo.png.asset.json";
 
 const Auth = () => {
