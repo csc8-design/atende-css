@@ -19,8 +19,8 @@ export const ACCENT_COLORS: AccentColor[] = [
   { name: "yellow", label: "Amarelo", hsl: "48 96% 53%" },
 ];
 
-const STORAGE_KEY = "app-theme";
-const ACCENT_STORAGE_KEY = "app-accent-color";
+const STORAGE_KEY = "atende-css-theme";
+const ACCENT_STORAGE_KEY = "atende-css-accent-color";
 
 function getSystemTheme(): "light" | "dark" {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";

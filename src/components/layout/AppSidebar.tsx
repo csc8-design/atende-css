@@ -297,9 +297,6 @@ const AppSidebar = () => {
   if (isAgent) {
     return (
       <aside
-        className={`h-screen sticky top-0 flex flex-col transition-all duration-300 ${
-          collapsed ? "w-[72px]" : "w-[220px]"
-        }`}
         className={`h-screen sticky top-0 flex flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 ${
           collapsed ? "w-[72px]" : "w-[220px]"
         }`}

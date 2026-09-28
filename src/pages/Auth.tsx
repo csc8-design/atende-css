@@ -41,30 +41,14 @@ const Auth = () => {
     setLoading(false);
   };
 
-  const hasLogo = branding.logo_light_url || branding.logo_url;
+  const activeLogo = branding.logo_light_url || branding.logo_url || cssLogo.url;
 
   return (
     <div className="min-h-screen flex">
       {/* Left side - branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center bg-background border-r border-border">
-        {/* Decorative circles */}
-        <div className="absolute -top-20 right-10 w-64 h-64 rounded-full opacity-20" style={{ background: "hsl(214, 40%, 82%)" }} />
-        <div className="absolute -bottom-16 -left-16 w-72 h-72 rounded-full opacity-15" style={{ background: "hsl(214, 40%, 80%)" }} />
-        <div className="absolute top-1/3 -left-10 w-48 h-48 rounded-full opacity-10" style={{ background: "hsl(214, 40%, 78%)" }} />
-
         <div className="relative z-10 text-center px-12 max-w-md">
-          {hasLogo ? (
-            <img src={branding.logo_light_url || branding.logo_url} alt={`${branding.platform_name} Logo`} className="max-w-[280px] max-h-28 object-contain mx-auto mb-8" />
-          ) : (
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <div className="w-14 h-14 rounded-xl bg-primary flex items-center justify-center">
-                <Zap className="w-8 h-8 text-primary-foreground" />
-              </div>
-              <span className="text-4xl font-bold text-foreground">
-                {branding.platform_name}
-              </span>
-            </div>
-          )}
+          <img src={activeLogo} alt={`${branding.platform_name} Logo`} className="max-w-[280px] max-h-28 object-contain mx-auto mb-8" />
           <p className="text-base leading-relaxed mb-8 text-muted-foreground">
             {branding.platform_description}
           </p>
