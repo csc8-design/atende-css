@@ -111,21 +111,19 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: Arial, Helvetica, sans-serif;
-    font-feature-settings: 'cv11', 'ss01', 'ss03', 'cv02';
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: 0;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
     letter-spacing: 0;
-    font-feature-settings: 'ss01';
   }
 
   .font-display {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
     letter-spacing: 0;
   }
 }
