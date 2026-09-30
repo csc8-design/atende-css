@@ -170,7 +170,21 @@ Deno.serve(async (req) => {
 
     const templateName = campaign.meta_template_name;
     const language = campaign.meta_template_language || "pt_BR";
-    const headerMediaUrl = campaign.meta_header_media_url || null;
+    // The whatsapp-media bucket is private: Meta can't download a "public" URL from it.
+    // Convert it into a signed URL (valid 7 days) so Meta can fetch the header image.
+    let headerMediaUrl: string | null = campaign.meta_header_media_url || null;
+    if (headerMediaUrl) {
+      const m = headerMediaUrl.match(/\/storage\/v1\/object\/(?:public|sign)\/([^/]+)\/([^?]+)/);
+      if (m) {
+        const { data: signed, error: sErr } = await admin.storage
+          .from(m[1]).createSignedUrl(decodeURIComponent(m[2]), 60 * 60 * 24 * 7);
+        if (sErr || !signed?.signedUrl) {
+          console.error("Failed to sign header media:", sErr);
+          return json({ error: "Não foi possível gerar o link da imagem do cabeçalho" }, 500);
+        }
+        headerMediaUrl = signed.signedUrl;
+      }
+    }
 
     if (action === "send_one") {
       if (!leadId) return json({ error: "leadId required" }, 400);
