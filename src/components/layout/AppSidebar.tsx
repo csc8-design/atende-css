@@ -311,7 +311,7 @@ const AppSidebar = () => {
               </div>
             )
           ) : (
-            <img src={cssLogo.url} alt="CSS" className="max-w-[150px] max-h-11 object-contain animate-fade-in" />
+            <img src={branding.logo_url || "/css-logo.png"} alt="CSS" className="max-w-[150px] max-h-11 object-contain animate-fade-in" />
           )}
         </div>
 
@@ -406,7 +406,7 @@ const AppSidebar = () => {
             </div>
           )
         ) : (
-          <img src={cssLogo.url} alt="CSS" className="max-w-[165px] max-h-12 object-contain animate-fade-in" />
+          <img src={branding.logo_url || "/css-logo.png"} alt="CSS" className="max-w-[165px] max-h-12 object-contain animate-fade-in" />
         )}
       </div>
 
