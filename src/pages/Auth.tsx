@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useBranding } from "@/hooks/useBranding";
-import cssLogo from "@/assets/css-logo.png.asset.json";
 
 const Auth = () => {
   const { signIn, signUp } = useAuth();
@@ -40,7 +39,7 @@ const Auth = () => {
     setLoading(false);
   };
 
-  const activeLogo = branding.logo_light_url || branding.logo_url || cssLogo.url;
+  const activeLogo = branding.logo_light_url || branding.logo_url || "/css-logo.png";
 
   return (
     <div className="min-h-screen flex">

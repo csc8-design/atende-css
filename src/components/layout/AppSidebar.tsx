@@ -37,7 +37,6 @@ import {
 } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import { EVOLUTION_ENABLED } from "@/lib/features";
-import cssLogo from "@/assets/css-logo.png.asset.json";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -312,7 +311,7 @@ const AppSidebar = () => {
               </div>
             )
           ) : (
-            <img src={cssLogo.url} alt="CSS" className="max-w-[150px] max-h-11 object-contain animate-fade-in" />
+            <img src={branding.logo_url || "/css-logo.png"} alt="CSS" className="max-w-[150px] max-h-11 object-contain animate-fade-in" />
           )}
         </div>
 
@@ -407,7 +406,7 @@ const AppSidebar = () => {
             </div>
           )
         ) : (
-          <img src={cssLogo.url} alt="CSS" className="max-w-[165px] max-h-12 object-contain animate-fade-in" />
+          <img src={branding.logo_url || "/css-logo.png"} alt="CSS" className="max-w-[165px] max-h-12 object-contain animate-fade-in" />
         )}
       </div>
 

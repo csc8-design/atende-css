@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import cssLogo from "@/assets/css-logo.png.asset.json";
+
+const LOCAL_LOGO_URL = "/css-logo.png";
 
 export interface BrandingConfig {
   platform_name: string;
@@ -18,8 +19,8 @@ export interface BrandingConfig {
 const DEFAULTS: BrandingConfig = {
   platform_name: "Atende CSS · ENGWE",
   platform_description: "Gestão integrada de conversas, atendentes e clientes via WhatsApp Business.",
-  logo_url: cssLogo.url,
-  logo_light_url: cssLogo.url,
+  logo_url: LOCAL_LOGO_URL,
+  logo_light_url: LOCAL_LOGO_URL,
   favicon_url: "",
   login_bg_color: "214, 32%, 91%",
   login_text: "Entre com seu e-mail corporativo",
@@ -31,13 +32,25 @@ const DEFAULTS: BrandingConfig = {
 const CACHE_KEY = "branding_cache";
 const CACHE_TTL = 5 * 60 * 1000; // 5 min
 
+function normalizeLogoUrl(value: string): string {
+  return value.startsWith("/__l5e/assets-v1/") ? LOCAL_LOGO_URL : value;
+}
+
+function normalizeBranding(data: BrandingConfig): BrandingConfig {
+  return {
+    ...data,
+    logo_url: normalizeLogoUrl(data.logo_url || LOCAL_LOGO_URL),
+    logo_light_url: normalizeLogoUrl(data.logo_light_url || LOCAL_LOGO_URL),
+  };
+}
+
 function getCached(): BrandingConfig | null {
   try {
     const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return null;
     const { data, ts } = JSON.parse(raw);
     if (Date.now() - ts > CACHE_TTL) return null;
-    return data;
+    return normalizeBranding(data);
   } catch {
     return null;
   }
@@ -70,8 +83,9 @@ export function useBranding() {
       }
     }
 
-    setBranding(config);
-    setCache(config);
+    const normalizedConfig = normalizeBranding(config);
+    setBranding(normalizedConfig);
+    setCache(normalizedConfig);
     setLoading(false);
   }, []);
 
