@@ -18,8 +18,8 @@ const META_TEMPLATES = [
     name: "template_teste",
     language: "pt_BR",
     label: "Template teste",
-    hasHeaderImage: false,
-    body: "O conteúdo desta mensagem será o texto aprovado pela Meta para o template template_teste.",
+    hasHeaderImage: true,
+    body: "No precinho",
     variables: [] as const,
   },
 ];
@@ -126,7 +126,7 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
   const handleSubmit = async () => {
     if (!name.trim()) return toast.error("Informe um nome para a campanha");
     if (rows.length === 0) return toast.error("Faça upload de uma planilha com leads");
-    // imagem de header é opcional
+    if (template.hasHeaderImage && !headerImageUrl) return toast.error("Anexe a imagem do cabeçalho (obrigatória neste template)");
     if (!handoffDeptId) return toast.error("Selecione o setor que receberá as respostas");
 
     setSubmitting(true);
