@@ -37,7 +37,6 @@ import {
 } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import { EVOLUTION_ENABLED } from "@/lib/features";
-import cssLogo from "@/assets/css-logo.png.asset.json";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
