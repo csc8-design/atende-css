@@ -12,23 +12,15 @@ interface Props {
 
 const SEGMENTS = ["Agro", "Escavadeiras", "Pás Carregadeiras", "Mini Escavadeiras", "Florestal", "Não identificado", "Outro"];
 
-// Templates aprovados (adicione aqui novos templates conforme forem aprovados na Meta)
+// Único template habilitado para campanhas.
 const META_TEMPLATES = [
   {
-    name: "arraiacbmaq",
+    name: "template_teste",
     language: "pt_BR",
-    label: "Arraiá ENGWE — 30% OFF + Starlink",
+    label: "Template teste",
     hasHeaderImage: false,
-    body: "🔥 Arraiá de Ofertas ENGWE:\n\nAté 30% OFF e Concorra a uma Starlink.\n\nOlá, {{1}}! Theo aqui.\n\nVi seu cadastro e separei as máquinas ideais para o seu segmento com um super desconto de 30% OFF exclusivo de Festa Junina.\n\nÉ a oportunidade certa para melhorar sua operação com o melhor preço do ano.\n\nQuer receber os modelos e as condições de pagamento? Clique abaixo e fale comigo agora!",
-    variables: ["nome"] as const,
-  },
-  {
-    name: "tratores_arraia",
-    language: "pt_BR",
-    label: "Tratores Arraiá — 30% OFF + Starlink",
-    hasHeaderImage: true,
-    body: "🔥 Arraiá de Ofertas ENGWE:\n\nAté 30% OFF e Concorra a uma Starlink.\n\nOlá, {{1}}! Theo aqui.\n\nVi seu cadastro e separei as tratores ideais para o seu segmento com um super desconto de 30% OFF exclusivo de Festa Junina.\n\nÉ a oportunidade certa para melhorar sua operação com o melhor preço do ano.\n\nQuer receber os modelos e as condições de pagamento?",
-    variables: ["nome"] as const,
+    body: "O conteúdo desta mensagem será o texto aprovado pela Meta para o template template_teste.",
+    variables: [] as const,
   },
 ];
 
@@ -59,7 +51,7 @@ function firstNameOf(v: string | null): string {
 export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreated }: Props) {
   const [name, setName] = useState("");
   const [segment, setSegment] = useState("Agro");
-  const [templateName, setTemplateName] = useState(META_TEMPLATES[0].name);
+  const templateName = META_TEMPLATES[0].name;
   const [throttle, setThrottle] = useState(1500);
   const [rows, setRows] = useState<any[]>([]);
   const [fileName, setFileName] = useState("");
@@ -126,7 +118,7 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
   };
 
   const reset = () => {
-    setName(""); setSegment("Agro"); setTemplateName(META_TEMPLATES[0].name);
+    setName(""); setSegment("Agro");
     setThrottle(1500); setRows([]); setFileName(""); setHeaderImageUrl(null); setHandoffDeptId("");
   };
 
@@ -236,13 +228,10 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
 
           <div>
             <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Template Meta aprovado</label>
-            <select value={templateName} onChange={(e) => setTemplateName(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-background">
-              {META_TEMPLATES.map((t) => <option key={t.name} value={t.name}>{t.label} ({t.name})</option>)}
-            </select>
-            <p className="text-[11px] text-muted-foreground mt-1">
-              Variáveis do template: {template.variables.map((v, i) => <code key={v} className="bg-secondary px-1 rounded mx-0.5">{`{{${i+1}}}=${v}`}</code>)}
-            </p>
+            <div className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-secondary/30">
+              {template.label} ({template.name})
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-1">Único template habilitado para novas campanhas.</p>
           </div>
 
           <div>

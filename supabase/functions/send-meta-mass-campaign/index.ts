@@ -37,10 +37,12 @@ function firstName(name?: string | null, fallback?: string | null): string {
   return "Cliente";
 }
 
-// Mapa de variáveis por template. Adicione novos templates aqui conforme aprovar na Meta.
+const ENABLED_TEMPLATE = "template_teste";
+
+// template_teste não envia parâmetros. Se a versão aprovada ganhar variáveis,
+// o mapeamento deve ser atualizado para refletir exatamente a ordem da Meta.
 const TEMPLATE_VARS: Record<string, (lead: any) => string[]> = {
-  arraiacbmaq: (l) => [firstName(l.nome, l.empresa)],
-  tratores_arraia: (l) => [firstName(l.nome, l.empresa)],
+  template_teste: () => [],
 };
 
 function buildTemplateComponents(templateName: string, lead: any, headerMediaUrl?: string | null) {
@@ -149,6 +151,9 @@ Deno.serve(async (req) => {
     if (cErr || !campaign) return json({ error: "Campaign not found" }, 404);
     if (campaign.channel !== "meta_template") return json({ error: "Campaign channel is not meta_template" }, 400);
     if (!campaign.meta_template_name) return json({ error: "meta_template_name is required" }, 400);
+    if (campaign.meta_template_name !== ENABLED_TEMPLATE) {
+      return json({ error: `Somente o template ${ENABLED_TEMPLATE} está habilitado` }, 400);
+    }
 
     if (action === "pause") {
       await admin.from("mass_campaigns").update({ status: "paused" }).eq("id", campaignId);
