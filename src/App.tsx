@@ -46,6 +46,7 @@ import BillingSettings from "./pages/settings/BillingSettings";
 import ProfileSettings from "./pages/settings/ProfileSettings";
 import AppearanceSettings from "./pages/settings/AppearanceSettings";
 import BrandingSettings from "./pages/settings/BrandingSettings";
+import MetaSettings from "./pages/settings/MetaSettings";
 
 const queryClient = new QueryClient();
 
@@ -127,6 +128,7 @@ const AppRoutes = () => {
       <Route path="closing-reasons" element={<ClosingReasons />} />
       <Route path="work-schedule" element={<WorkSchedule />} />
       <Route path="chatbot" element={<ChatbotSettings />} />
+      <Route path="meta" element={<MetaSettings />} />
       <Route path="ai" element={<AISettings />} />
       <Route path="widgets" element={<WidgetsSettings />} />
       <Route path="developer" element={<DeveloperSettings />} />

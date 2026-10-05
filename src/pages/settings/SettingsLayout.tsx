@@ -18,6 +18,7 @@ import {
   Palette,
   ChevronRight,
   ArrowLeft,
+  MessageCircle,
 } from "lucide-react";
 import AppLayout from "@/components/layout/AppLayout";
 import { useAuth } from "@/contexts/AuthContext";
@@ -33,6 +34,7 @@ const allSettingsNav = [
   { icon: CheckCircle2, label: "Motivos de Finalização", path: "/settings/closing-reasons", access: "admin" as const },
   { icon: Clock, label: "Jornada de Trabalho", path: "/settings/work-schedule", access: "admin" as const },
   { icon: Bot, label: "Chatbot", path: "/settings/chatbot", access: "admin" as const },
+  { icon: MessageCircle, label: "Meta", path: "/settings/meta", access: "admin" as const },
   { icon: Brain, label: "Inteligência Artificial", path: "/settings/ai", access: "admin" as const },
   { icon: Puzzle, label: "Widgets", path: "/settings/widgets", access: "admin" as const },
   { icon: Code2, label: "Desenvolvedor", path: "/settings/developer", access: "admin" as const },
