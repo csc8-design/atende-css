@@ -1,3 +1,4 @@
+import { getMetaCreds } from "../_shared/meta-creds.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -145,8 +146,8 @@ Deno.serve(async (req) => {
     }
 
     const phone = conversation.contacts?.phone;
-    const WHATSAPP_TOKEN = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
-    const PHONE_NUMBER_ID = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
+    const WHATSAPP_TOKEN = (await getMetaCreds()).token!;
+    const PHONE_NUMBER_ID = (await getMetaCreds()).phoneNumberId!;
 
     // Build mandatory signature: "FirstName LastName - Department:"
     let signature = "";

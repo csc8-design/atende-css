@@ -1,3 +1,4 @@
+import { getMetaCreds } from "../_shared/meta-creds.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -76,8 +77,8 @@ Deno.serve(async (req) => {
       }
 
       // Send WhatsApp message with rating request
-      const WHATSAPP_TOKEN = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
-      const PHONE_NUMBER_ID = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
+      const WHATSAPP_TOKEN = (await getMetaCreds()).token!;
+      const PHONE_NUMBER_ID = (await getMetaCreds()).phoneNumberId!;
       const phone = conv.contacts?.phone;
 
       const surveyMessage =
@@ -202,8 +203,8 @@ Deno.serve(async (req) => {
         .eq("id", contactId)
         .single();
 
-      const WHATSAPP_TOKEN = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
-      const PHONE_NUMBER_ID = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
+      const WHATSAPP_TOKEN = (await getMetaCreds()).token!;
+      const PHONE_NUMBER_ID = (await getMetaCreds()).phoneNumberId!;
 
       if (WHATSAPP_TOKEN && PHONE_NUMBER_ID && contact?.phone) {
         try {
