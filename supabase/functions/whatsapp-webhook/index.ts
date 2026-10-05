@@ -1,3 +1,4 @@
+import { getMetaCreds } from "../_shared/meta-creds.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -40,7 +41,7 @@ const DEPT_POS_VENDAS_PECAS = "";
 
 
 async function getMediaUrl(mediaId: string): Promise<string | null> {
-  const WHATSAPP_TOKEN = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
+  const WHATSAPP_TOKEN = (await getMetaCreds()).token!;
   if (!WHATSAPP_TOKEN) return null;
 
   try {
@@ -170,8 +171,8 @@ async function transcribeAudio(mediaUrl: string): Promise<string | null> {
 }
 
 async function sendWhatsAppMessage(phone: string, message: string) {
-  const WHATSAPP_TOKEN = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
-  const PHONE_NUMBER_ID = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
+  const WHATSAPP_TOKEN = (await getMetaCreds()).token!;
+  const PHONE_NUMBER_ID = (await getMetaCreds()).phoneNumberId!;
   if (!WHATSAPP_TOKEN || !PHONE_NUMBER_ID) {
     console.warn("WhatsApp credentials not configured");
     return;
@@ -199,8 +200,8 @@ async function sendWhatsAppMessage(phone: string, message: string) {
 }
 
 async function sendWhatsAppTemplate(phone: string, templateName: string, languageCode: string = "pt_BR", components: any[] = []) {
-  const WHATSAPP_TOKEN = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
-  const PHONE_NUMBER_ID = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
+  const WHATSAPP_TOKEN = (await getMetaCreds()).token!;
+  const PHONE_NUMBER_ID = (await getMetaCreds()).phoneNumberId!;
   if (!WHATSAPP_TOKEN || !PHONE_NUMBER_ID) {
     console.warn("WhatsApp credentials not configured");
     return;
@@ -322,7 +323,7 @@ Deno.serve(async (req) => {
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-  const VERIFY_TOKEN = Deno.env.get("WHATSAPP_VERIFY_TOKEN");
+  const VERIFY_TOKEN = (await getMetaCreds()).verifyToken;
 
   // GET = webhook verification
   if (req.method === "GET") {

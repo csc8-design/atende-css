@@ -1,3 +1,4 @@
+import { getMetaCreds } from "../_shared/meta-creds.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -94,8 +95,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    const accessToken = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
-    const phoneNumberId = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
+    const accessToken = (await getMetaCreds()).token!;
+    const phoneNumberId = (await getMetaCreds()).phoneNumberId!;
 
     if (!accessToken || !phoneNumberId) {
       return new Response(

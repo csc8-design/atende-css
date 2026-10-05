@@ -1,3 +1,4 @@
+import { getMetaCreds } from "../_shared/meta-creds.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -6,8 +7,8 @@ const corsHeaders = {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const TOKEN = Deno.env.get("WHATSAPP_ACCESS_TOKEN")!;
-    const PHONE_ID = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID")!;
+    const TOKEN = (await getMetaCreds()).token!;
+    const PHONE_ID = (await getMetaCreds()).phoneNumberId!;
 
     // Get WABA ID from the phone number node directly
     const phoneRes = await fetch(

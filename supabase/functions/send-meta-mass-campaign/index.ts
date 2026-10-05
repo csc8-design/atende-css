@@ -1,3 +1,4 @@
+import { getMetaCreds } from "../_shared/meta-creds.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -164,8 +165,8 @@ Deno.serve(async (req) => {
       return json({ ok: true });
     }
 
-    const token = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
-    const phoneNumberId = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
+    const token = (await getMetaCreds()).token!;
+    const phoneNumberId = (await getMetaCreds()).phoneNumberId!;
     if (!token || !phoneNumberId) return json({ error: "WhatsApp API não configurada" }, 500);
 
     const templateName = campaign.meta_template_name;
