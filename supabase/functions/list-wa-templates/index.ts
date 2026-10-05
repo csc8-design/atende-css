@@ -7,19 +7,15 @@ const corsHeaders = {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const TOKEN = (await getMetaCreds()).token!;
-    const PHONE_ID = (await getMetaCreds()).phoneNumberId!;
-
-    // Get WABA ID from the phone number node directly
-    const phoneRes = await fetch(
-      `https://graph.facebook.com/v23.0/${PHONE_ID}?fields=whatsapp_business_account{id,name}&access_token=${TOKEN}`
-    );
-    const phoneJson = await phoneRes.json();
-    let wabaId: string | undefined =
-      phoneJson?.whatsapp_business_account?.id;
-
-    // Fallback: webhook entry id we know is 1586879535793359
-    if (!wabaId) wabaId = "1586879535793359";
+    const creds = await getMetaCreds();
+    const TOKEN = creds.token!;
+    // Templates belong to the WABA of the connected number (Settings > Meta).
+    const wabaId = creds.businessAccountId;
+    if (!wabaId) {
+      return new Response(JSON.stringify({ error: "Informe o ID da conta WhatsApp Business na aba Meta." }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const tplRes = await fetch(
       `https://graph.facebook.com/v23.0/${wabaId}/message_templates?fields=name,status,language,category,components&limit=200`,
