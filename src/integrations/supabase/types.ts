@@ -1271,6 +1271,39 @@ export type Database = {
           },
         ]
       }
+      meta_credentials: {
+        Row: {
+          access_token: string | null
+          app_id: string | null
+          business_account_id: string | null
+          id: number
+          phone_number_id: string | null
+          updated_at: string
+          updated_by: string | null
+          verify_token: string | null
+        }
+        Insert: {
+          access_token?: string | null
+          app_id?: string | null
+          business_account_id?: string | null
+          id?: number
+          phone_number_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          verify_token?: string | null
+        }
+        Update: {
+          access_token?: string | null
+          app_id?: string | null
+          business_account_id?: string | null
+          id?: number
+          phone_number_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          verify_token?: string | null
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null

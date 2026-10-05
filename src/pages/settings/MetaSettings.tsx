@@ -186,6 +186,57 @@ const MetaSettings = () => {
           </div>
         )}
       </div>
+      <TemplatesCard />
+    </div>
+  );
+};
+
+const TemplatesCard = () => {
+  const [items, setItems] = useState<any[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const load = async () => {
+    setLoading(true); setErr(null);
+    const { data, error } = await supabase.functions.invoke("list-wa-templates", { body: {} });
+    if (error || data?.error || data?.raw?.error) setErr(data?.raw?.error?.message || data?.error || error?.message || "Falha");
+    else setItems((data?.raw?.data || []).filter((t: any) => t.status === "APPROVED"));
+    setLoading(false);
+  };
+  useEffect(() => { load(); }, []);
+  return (
+    <div className="bg-card rounded-xl border border-border p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="font-semibold text-foreground">Templates aprovados</h3>
+        <button onClick={load} disabled={loading} className="text-sm text-primary hover:underline disabled:opacity-50">
+          {loading ? "Carregando..." : "Atualizar"}
+        </button>
+      </div>
+      {err && <p className="text-sm text-destructive">Não foi possível consultar a Meta: {err}</p>}
+      {items && items.length === 0 && <p className="text-sm text-muted-foreground">Nenhum template aprovado.</p>}
+      <div className="space-y-3">
+        {items?.map((t) => {
+          const comps = t.components || [];
+          const header = comps.find((c: any) => c.type === "HEADER");
+          const body = comps.find((c: any) => c.type === "BODY");
+          const buttons = comps.find((c: any) => c.type === "BUTTONS");
+          const vars = (body?.text?.match(/\{\{\d+\}\}/g) || []).length;
+          return (
+            <div key={t.name + t.language} className="border border-border rounded-lg p-4 space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-mono text-sm font-semibold text-foreground">{t.name}</span>
+                <span className="text-xs px-2 py-0.5 rounded bg-secondary text-secondary-foreground">{t.language}</span>
+                <span className="text-xs px-2 py-0.5 rounded bg-secondary text-secondary-foreground">{t.category}</span>
+                {header && <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">Cabeçalho: {header.format}</span>}
+                <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">{vars} variáve{vars === 1 ? "l" : "is"}</span>
+              </div>
+              {body?.text && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{body.text}</p>}
+              {buttons?.buttons?.length > 0 && (
+                <p className="text-xs text-muted-foreground">Botões: {buttons.buttons.map((b: any) => b.text).join(", ")}</p>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
