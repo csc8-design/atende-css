@@ -50,7 +50,10 @@ function buildTemplateComponents(lead: any, varCount: number, headerMediaUrl?: s
   }
   if (varCount > 0) {
     const nome = firstName(lead.nome, lead.empresa) || "tudo bem";
-    const cidade = (lead.cidade || "").trim() || "sua região";
+    const rawCity = String(lead.cidade || "").trim();
+    const cidade = rawCity
+      ? rawCity.toLowerCase().replace(/(^|\s)(\p{L})/gu, (_m: string, sp: string, ch: string) => sp + ch.toUpperCase())
+      : "sua região";
     const values = [nome, cidade];
     const vars = Array.from({ length: varCount }, (_, i) => values[i] || "atendimento");
     components.push({
@@ -61,7 +64,13 @@ function buildTemplateComponents(lead: any, varCount: number, headerMediaUrl?: s
   return components;
 }
 
-async function sendOne(admin: any, token: string, phoneNumberId: string, lead: any, templateName: string, language: string, headerMediaUrl: string | null, varCount: number) {
+function renderBody(text: string, components: any[]): string {
+  if (!text) return "";
+  const params = components.find((c) => c.type === "body")?.parameters || [];
+  return text.replace(/\{\{(\d+)\}\}/g, (m, n) => params[Number(n) - 1]?.text ?? m);
+}
+
+async function sendOne(admin: any, token: string, phoneNumberId: string, lead: any, templateName: string, language: string, headerMediaUrl: string | null, varCount: number, bodyText = "") {
   const phone = normalizePhone(lead.telefone_normalizado || lead.telefone);
   if (!phone || phone.length < 12) {
     await admin.from("mass_campaign_leads").update({
@@ -106,7 +115,7 @@ async function sendOne(admin: any, token: string, phoneNumberId: string, lead: a
     await admin.from("mass_campaign_leads").update({
       status: "sent", sent_at: sentAt,
       evolution_message_id: msgId, // reusa coluna existente para armazenar o wamid
-      final_message: `[template:${templateName}]`,
+      final_message: renderBody(bodyText, components) || `[template:${templateName}]`,
       error_message: null, updated_at: sentAt,
     }).eq("id", lead.id);
     return { ok: true };
@@ -167,6 +176,7 @@ Deno.serve(async (req) => {
 
     // Descobre quantas variáveis o template aprovado usa (consulta à Meta).
     let templateVarCount = 0;
+    let templateBody = "";
     try {
       const tplRes = await fetch(
         `https://graph.facebook.com/v23.0/${creds.businessAccountId}/message_templates?name=${encodeURIComponent(templateName)}&fields=name,language,components&limit=50`,
@@ -177,6 +187,7 @@ Deno.serve(async (req) => {
         (t: any) => t.name === templateName && (t.language || "").toLowerCase() === (language || "pt_BR").toLowerCase()
       );
       const bodyText = (found?.components || []).find((c: any) => c.type === "BODY")?.text || "";
+      templateBody = bodyText;
       templateVarCount = (bodyText.match(/\{\{\d+\}\}/g) || []).length;
     } catch (e) {
       console.error("Failed to fetch template definition:", e);
@@ -201,7 +212,7 @@ Deno.serve(async (req) => {
       if (!leadId) return json({ error: "leadId required" }, 400);
       const { data: lead } = await admin.from("mass_campaign_leads").select("*").eq("id", leadId).single();
       if (!lead) return json({ error: "Lead not found" }, 404);
-      const r = await sendOne(admin, token, phoneNumberId, lead, templateName, language, headerMediaUrl, templateVarCount);
+      const r = await sendOne(admin, token, phoneNumberId, lead, templateName, language, headerMediaUrl, templateVarCount, templateBody);
       await refreshCounters(admin, campaignId);
       return json(r);
     }
@@ -229,7 +240,7 @@ Deno.serve(async (req) => {
         const { data: cur } = await admin.from("mass_campaigns").select("status").eq("id", campaignId).single();
         if (cur?.status === "paused" || cur?.status === "cancelled") break;
 
-        const r = await sendOne(admin, token, phoneNumberId, lead, templateName, language, headerMediaUrl, templateVarCount);
+        const r = await sendOne(admin, token, phoneNumberId, lead, templateName, language, headerMediaUrl, templateVarCount, templateBody);
         if (r.ok) sent++; else failed++;
         if ((r as any).rateLimited) {
           rateLimited = true;
