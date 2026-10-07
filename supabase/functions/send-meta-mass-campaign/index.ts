@@ -38,15 +38,9 @@ function firstName(name?: string | null, fallback?: string | null): string {
   return "Cliente";
 }
 
-const ENABLED_TEMPLATE = "template_teste";
-
-// template_teste não envia parâmetros. Se a versão aprovada ganhar variáveis,
-// o mapeamento deve ser atualizado para refletir exatamente a ordem da Meta.
-const TEMPLATE_VARS: Record<string, (lead: any) => string[]> = {
-  template_teste: () => [],
-};
-
-function buildTemplateComponents(templateName: string, lead: any, headerMediaUrl?: string | null) {
+// Preenche as variáveis do corpo do template: {{1}} = primeiro nome,
+// {{2}} = cidade, demais = valor genérico. Templates sem variáveis enviam vazio.
+function buildTemplateComponents(lead: any, varCount: number, headerMediaUrl?: string | null) {
   const components: any[] = [];
   if (headerMediaUrl) {
     components.push({
@@ -54,9 +48,11 @@ function buildTemplateComponents(templateName: string, lead: any, headerMediaUrl
       parameters: [{ type: "image", image: { link: headerMediaUrl } }],
     });
   }
-  const varsFn = TEMPLATE_VARS[templateName];
-  const vars = varsFn ? varsFn(lead) : [];
-  if (vars.length > 0) {
+  if (varCount > 0) {
+    const nome = firstName(lead.nome, lead.empresa) || "tudo bem";
+    const cidade = (lead.cidade || "").trim() || "sua região";
+    const values = [nome, cidade];
+    const vars = Array.from({ length: varCount }, (_, i) => values[i] || "atendimento");
     components.push({
       type: "body",
       parameters: vars.map((v) => ({ type: "text", text: v })),
@@ -65,7 +61,7 @@ function buildTemplateComponents(templateName: string, lead: any, headerMediaUrl
   return components;
 }
 
-async function sendOne(admin: any, token: string, phoneNumberId: string, lead: any, templateName: string, language: string, headerMediaUrl: string | null) {
+async function sendOne(admin: any, token: string, phoneNumberId: string, lead: any, templateName: string, language: string, headerMediaUrl: string | null, varCount: number) {
   const phone = normalizePhone(lead.telefone_normalizado || lead.telefone);
   if (!phone || phone.length < 12) {
     await admin.from("mass_campaign_leads").update({
@@ -74,7 +70,7 @@ async function sendOne(admin: any, token: string, phoneNumberId: string, lead: a
     return { ok: false, reason: "invalid_phone" };
   }
 
-  const components = buildTemplateComponents(templateName, lead, headerMediaUrl);
+  const components = buildTemplateComponents(lead, varCount, headerMediaUrl);
   const body: any = {
     messaging_product: "whatsapp",
     to: phone,
@@ -152,10 +148,6 @@ Deno.serve(async (req) => {
     if (cErr || !campaign) return json({ error: "Campaign not found" }, 404);
     if (campaign.channel !== "meta_template") return json({ error: "Campaign channel is not meta_template" }, 400);
     if (!campaign.meta_template_name) return json({ error: "meta_template_name is required" }, 400);
-    if (campaign.meta_template_name !== ENABLED_TEMPLATE) {
-      return json({ error: `Somente o template ${ENABLED_TEMPLATE} está habilitado` }, 400);
-    }
-
     if (action === "pause") {
       await admin.from("mass_campaigns").update({ status: "paused" }).eq("id", campaignId);
       return json({ ok: true });
@@ -165,12 +157,30 @@ Deno.serve(async (req) => {
       return json({ ok: true });
     }
 
-    const token = (await getMetaCreds()).token!;
-    const phoneNumberId = (await getMetaCreds()).phoneNumberId!;
+    const creds = await getMetaCreds();
+    const token = creds.token!;
+    const phoneNumberId = creds.phoneNumberId!;
     if (!token || !phoneNumberId) return json({ error: "WhatsApp API não configurada" }, 500);
 
     const templateName = campaign.meta_template_name;
     const language = campaign.meta_template_language || "pt_BR";
+
+    // Descobre quantas variáveis o template aprovado usa (consulta à Meta).
+    let templateVarCount = 0;
+    try {
+      const tplRes = await fetch(
+        `https://graph.facebook.com/v23.0/${creds.businessAccountId}/message_templates?name=${encodeURIComponent(templateName)}&fields=name,language,components&limit=50`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const tplJson = await tplRes.json().catch(() => ({}));
+      const found = (tplJson?.data || []).find(
+        (t: any) => t.name === templateName && (t.language || "").toLowerCase() === (language || "pt_BR").toLowerCase()
+      );
+      const bodyText = (found?.components || []).find((c: any) => c.type === "BODY")?.text || "";
+      templateVarCount = (bodyText.match(/\{\{\d+\}\}/g) || []).length;
+    } catch (e) {
+      console.error("Failed to fetch template definition:", e);
+    }
     // The whatsapp-media bucket is private: Meta can't download a "public" URL from it.
     // Convert it into a signed URL (valid 7 days) so Meta can fetch the header image.
     let headerMediaUrl: string | null = campaign.meta_header_media_url || null;
@@ -191,7 +201,7 @@ Deno.serve(async (req) => {
       if (!leadId) return json({ error: "leadId required" }, 400);
       const { data: lead } = await admin.from("mass_campaign_leads").select("*").eq("id", leadId).single();
       if (!lead) return json({ error: "Lead not found" }, 404);
-      const r = await sendOne(admin, token, phoneNumberId, lead, templateName, language, headerMediaUrl);
+      const r = await sendOne(admin, token, phoneNumberId, lead, templateName, language, headerMediaUrl, templateVarCount);
       await refreshCounters(admin, campaignId);
       return json(r);
     }
@@ -219,7 +229,7 @@ Deno.serve(async (req) => {
         const { data: cur } = await admin.from("mass_campaigns").select("status").eq("id", campaignId).single();
         if (cur?.status === "paused" || cur?.status === "cancelled") break;
 
-        const r = await sendOne(admin, token, phoneNumberId, lead, templateName, language, headerMediaUrl);
+        const r = await sendOne(admin, token, phoneNumberId, lead, templateName, language, headerMediaUrl, templateVarCount);
         if (r.ok) sent++; else failed++;
         if ((r as any).rateLimited) {
           rateLimited = true;

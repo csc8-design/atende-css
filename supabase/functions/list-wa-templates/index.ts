@@ -28,12 +28,15 @@ Deno.serve(async (req) => {
       const body = (t.components || []).find((c: any) => c.type === "BODY");
       const text: string = body?.text || "";
       const vars = (text.match(/\{\{\d+\}\}/g) || []).length;
+      const header = (t.components || []).find((c: any) => c.type === "HEADER");
       return {
         name: t.name,
         language: t.language,
         status: t.status,
         category: t.category,
         variables: vars,
+        has_header_image: header?.format === "IMAGE",
+        body: text,
         body_preview: text.slice(0, 160),
       };
     });
