@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useEffect } from "react";
 import * as XLSX from "xlsx";
-import { Upload, X, FileSpreadsheet, Loader2, Info, Image as ImageIcon, Users2 } from "lucide-react";
+import { Upload, X, FileSpreadsheet, Loader2, Info, Users2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -10,19 +10,13 @@ interface Props {
   onCreated: () => void;
 }
 
-const SEGMENTS = ["Agro", "Escavadeiras", "Pás Carregadeiras", "Mini Escavadeiras", "Florestal", "Não identificado", "Outro"];
-
-// Único template habilitado para campanhas.
-const META_TEMPLATES = [
-  {
-    name: "template_teste",
-    language: "pt_BR",
-    label: "Template teste",
-    hasHeaderImage: true,
-    body: "No precinho",
-    variables: [] as const,
-  },
-];
+interface ApprovedTemplate {
+  name: string;
+  language: string;
+  category: string;
+  variables: number;
+  body: string;
+}
 
 function normPhone(raw: string): string {
   return (raw || "").toString().replace(/\D/g, "");
@@ -50,18 +44,16 @@ function firstNameOf(v: string | null): string {
 
 export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreated }: Props) {
   const [name, setName] = useState("");
-  const [segment, setSegment] = useState("Agro");
-  const templateName = META_TEMPLATES[0].name;
+  const [templates, setTemplates] = useState<ApprovedTemplate[]>([]);
+  const [templatesLoading, setTemplatesLoading] = useState(false);
+  const [templateName, setTemplateName] = useState("");
   const [throttle, setThrottle] = useState(1500);
   const [rows, setRows] = useState<any[]>([]);
   const [fileName, setFileName] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [headerImageUrl, setHeaderImageUrl] = useState<string | null>(null);
-  const [uploadingMedia, setUploadingMedia] = useState(false);
   const [departments, setDepartments] = useState<{ id: string; name: string }[]>([]);
   const [handoffDeptId, setHandoffDeptId] = useState<string>("");
   const fileRef = useRef<HTMLInputElement>(null);
-  const mediaRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -69,12 +61,42 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
       .then(({ data }) => setDepartments(data || []));
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    setTemplatesLoading(true);
+    supabase.functions.invoke("list-wa-templates", { body: {} })
+      .then(({ data, error }) => {
+        if (error) throw new Error(error.message);
+        const list: ApprovedTemplate[] = (data?.templates || [])
+          .filter((t: any) => t.status === "APPROVED")
+          .map((t: any) => ({
+            name: t.name,
+            language: t.language,
+            category: t.category,
+            variables: t.variables || 0,
+            body: t.body || t.body_preview || "",
+          }));
+        setTemplates(list);
+        if (list.length > 0) setTemplateName(list[0].name);
+        else toast.error("Nenhum template aprovado encontrado nesta conta do WhatsApp");
+      })
+      .catch((e: any) => toast.error("Erro ao buscar templates: " + (e.message || e)))
+      .finally(() => setTemplatesLoading(false));
+  }, [open]);
 
-  const template = useMemo(() => META_TEMPLATES.find((t) => t.name === templateName)!, [templateName]);
+  const template = useMemo(
+    () => templates.find((t) => t.name === templateName) || null,
+    [templates, templateName]
+  );
 
   const preview = useMemo(() => {
+    if (!template) return "";
     const sampleName = rows[0] ? firstNameOf(pick(rows[0], ["Nome", "nome", "Name"])) : "Cliente";
-    return template.body.replace(/\{\{\s*1\s*\}\}/g, sampleName);
+    const sampleCity = (rows[0] ? pick(rows[0], ["Cidade", "cidade", "City"]) : null) || "sua região";
+    return template.body
+      .replace(/\{\{\s*1\s*\}\}/g, sampleName)
+      .replace(/\{\{\s*2\s*\}\}/g, sampleCity)
+      .replace(/\{\{\s*\d+\s*\}\}/g, "…");
   }, [rows, template]);
 
   if (!open) return null;
@@ -83,66 +105,42 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
     try {
       const buf = await file.arrayBuffer();
       const wb = XLSX.read(buf, { type: "array" });
-      let sheetName = wb.SheetNames[0];
-      const segLower = segment.toLowerCase();
-      const matched = wb.SheetNames.find((s) => s.toLowerCase().includes(segLower.split(" ")[0]));
-      if (matched) sheetName = matched;
+      const sheetName = wb.SheetNames[0];
       const json = XLSX.utils.sheet_to_json<any>(wb.Sheets[sheetName], { defval: "" });
       setRows(json);
       setFileName(file.name);
-      if (!name) setName(`${template.label} — ${file.name.replace(/\.(xlsx|csv)$/i, "")}`);
+      if (!name) setName(`${template?.name || "Campanha"} — ${file.name.replace(/\.(xlsx|csv)$/i, "")}`);
       toast.success(`${json.length} linhas lidas da aba "${sheetName}"`);
     } catch (err: any) {
       toast.error("Erro ao ler arquivo: " + err.message);
     }
   };
 
-  const handleMediaUpload = async (file: File) => {
-    if (file.size > 5 * 1024 * 1024) return toast.error("Imagem muito grande (máx 5MB para header Meta)");
-    setUploadingMedia(true);
-    try {
-      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-      const path = `meta-campaigns/headers/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("whatsapp-media").upload(path, file, {
-        contentType: file.type, upsert: true,
-      });
-      if (upErr) throw upErr;
-      const { data } = supabase.storage.from("whatsapp-media").getPublicUrl(path);
-      setHeaderImageUrl(data.publicUrl);
-      toast.success("Imagem de cabeçalho anexada");
-    } catch (err: any) {
-      toast.error("Erro ao enviar imagem: " + err.message);
-    } finally {
-      setUploadingMedia(false);
-    }
-  };
-
   const reset = () => {
-    setName(""); setSegment("Agro");
-    setThrottle(1500); setRows([]); setFileName(""); setHeaderImageUrl(null); setHandoffDeptId("");
+    setName("");
+    setThrottle(1500); setRows([]); setFileName(""); setHandoffDeptId("");
   };
 
 
   const handleSubmit = async () => {
     if (!name.trim()) return toast.error("Informe um nome para a campanha");
+    if (!templateName) return toast.error("Selecione um template aprovado");
     if (rows.length === 0) return toast.error("Faça upload de uma planilha com leads");
-    if (template.hasHeaderImage && !headerImageUrl) return toast.error("Anexe a imagem do cabeçalho (obrigatória neste template)");
     if (!handoffDeptId) return toast.error("Selecione o setor que receberá as respostas");
 
     setSubmitting(true);
     try {
+      const selected = templates.find((t) => t.name === templateName)!;
       const { data: campaign, error: cErr } = await supabase
         .from("mass_campaigns")
         .insert({
           name: name.trim(),
-          segment,
-          message_template: template.body,
+          message_template: selected.body,
           throttle_ms: throttle,
           status: "draft",
           channel: "meta_template",
-          meta_template_name: template.name,
-          meta_template_language: template.language,
-          meta_header_media_url: headerImageUrl,
+          meta_template_name: selected.name,
+          meta_template_language: selected.language,
           handoff_department_id: handoffDeptId,
         } as any)
         .select().single();
@@ -167,7 +165,7 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
             cidade: pick(r, ["Cidade", "cidade", "City"]),
             uf: pick(r, ["UF", "Estado", "State"]),
             fonte: pick(r, ["Fonte", "fonte", "Source"]),
-            segmento: pick(r, ["Segmento sugerido", "Segmento", "segmento"]) || segment,
+            segmento: pick(r, ["Segmento sugerido", "Segmento", "segmento"]),
             score: scoreStr ? Number(scoreStr) || null : null,
             prioridade: pick(r, ["Prioridade", "prioridade"]),
             email: pick(r, ["Email", "email", "E-mail"]),
@@ -214,25 +212,48 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Nome</label>
-              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Ex.: Arraiá Escavadeiras"
+              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nome da campanha"
                 className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-background" />
             </div>
             <div>
-              <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Segmento</label>
-              <select value={segment} onChange={(e) => setSegment(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-background">
-                {SEGMENTS.map((s) => <option key={s}>{s}</option>)}
-              </select>
+              <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Intervalo entre envios</label>
+              <div className="flex items-center gap-3">
+                <input type="number" min={500} step={250} value={throttle}
+                  onChange={(e) => setThrottle(Number(e.target.value) || 1500)}
+                  className="w-32 px-3 py-2 text-sm border border-border rounded-lg bg-background" />
+                <span className="text-xs text-muted-foreground">ms</span>
+              </div>
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Template Meta aprovado</label>
-            <div className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-secondary/30">
-              {template.label} ({template.name})
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-1">Único template habilitado para novas campanhas.</p>
+            <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Template aprovado (busca na Meta)</label>
+            {templatesLoading ? (
+              <div className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground border border-border rounded-lg">
+                <Loader2 className="w-4 h-4 animate-spin" /> Buscando templates aprovados…
+              </div>
+            ) : templates.length === 0 ? (
+              <div className="px-3 py-2 text-sm text-muted-foreground border border-border rounded-lg bg-secondary/30">
+                Nenhum template aprovado. Verifique o token na aba Configurações → Meta.
+              </div>
+            ) : (
+              <select value={templateName} onChange={(e) => setTemplateName(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-background">
+                {templates.map((t) => (
+                  <option key={t.name} value={t.name}>
+                    {t.name} ({t.language}){t.variables > 0 ? ` — ${t.variables} variáveis` : ""}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
+
+          {template && (
+            <div className="bg-secondary/40 border border-border rounded-lg p-3">
+              <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-2">Prévia (usando o 1º lead)</p>
+              <p className="text-sm whitespace-pre-wrap text-foreground">{preview}</p>
+            </div>
+          )}
 
           <div>
             <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 flex items-center gap-1.5">
@@ -246,50 +267,6 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
             <p className="text-[11px] text-muted-foreground mt-1">
               Quando o lead responder, a conversa aparece no Inbox já atribuída a este setor. Sem resposta, nada aparece.
             </p>
-          </div>
-
-
-
-          <div className="bg-secondary/40 border border-border rounded-lg p-3">
-            <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-2">Prévia (usando o 1º lead)</p>
-            <p className="text-sm whitespace-pre-wrap text-foreground">{preview}</p>
-          </div>
-
-          {template.hasHeaderImage && (
-            <div>
-              <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">
-                Imagem do cabeçalho (obrigatória) <span className="normal-case text-muted-foreground/70 font-normal">— JPG/PNG até 5MB</span>
-              </label>
-              <input ref={mediaRef} type="file" accept="image/jpeg,image/png" className="hidden"
-                onChange={(e) => e.target.files?.[0] && handleMediaUpload(e.target.files[0])} />
-              {headerImageUrl ? (
-                <div className="border border-border rounded-lg p-2 flex items-center gap-3">
-                  <img src={headerImageUrl} alt="header" className="w-16 h-16 object-cover rounded" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium truncate">Imagem anexada</p>
-                    <p className="text-[10px] text-muted-foreground truncate">{headerImageUrl.split("/").pop()}</p>
-                  </div>
-                  <button onClick={() => mediaRef.current?.click()} className="text-xs text-primary hover:underline">Trocar</button>
-                  <button onClick={() => setHeaderImageUrl(null)} className="text-xs text-destructive hover:underline">Remover</button>
-                </div>
-              ) : (
-                <button onClick={() => mediaRef.current?.click()} disabled={uploadingMedia}
-                  className="w-full border-2 border-dashed border-border rounded-lg px-4 py-4 text-center hover:bg-secondary/30 transition flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                  {uploadingMedia ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-5 h-5" />}
-                  {uploadingMedia ? "Enviando..." : "Anexar imagem do header"}
-                </button>
-              )}
-            </div>
-          )}
-
-          <div>
-            <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Intervalo entre envios</label>
-            <div className="flex items-center gap-3">
-              <input type="number" min={500} step={250} value={throttle}
-                onChange={(e) => setThrottle(Number(e.target.value) || 1500)}
-                className="w-32 px-3 py-2 text-sm border border-border rounded-lg bg-background" />
-              <span className="text-xs text-muted-foreground">ms (rec. 1000-2000 para respeitar rate limit Meta)</span>
-            </div>
           </div>
 
           <div>
@@ -313,14 +290,14 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
             </button>
             <div className="flex items-start gap-2 mt-2 text-xs text-muted-foreground">
               <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-              <span>Colunas: <strong>Nome, Empresa, Telefone, Produto sugerido, Cidade, UF, Fonte, Score</strong>. Telefones duplicados são removidos.</span>
+              <span>Colunas: <strong>Nome, Empresa, Telefone, Produto sugerido, Cidade, UF, Fonte, Score</strong>. Telefones duplicados são removidos. As variáveis do template usam Nome ({{1}}) e Cidade ({{2}}).</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border bg-secondary/20">
           <button onClick={onClose} className="px-4 py-2 text-sm rounded-lg border border-border hover:bg-secondary">Cancelar</button>
-          <button onClick={handleSubmit} disabled={submitting || rows.length === 0}
+          <button onClick={handleSubmit} disabled={submitting || rows.length === 0 || !templateName}
             className="px-4 py-2 text-sm rounded-lg bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 flex items-center gap-2">
             {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
             Criar campanha ({rows.length})
