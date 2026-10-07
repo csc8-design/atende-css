@@ -290,7 +290,7 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
             </button>
             <div className="flex items-start gap-2 mt-2 text-xs text-muted-foreground">
               <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-              <span>Colunas: <strong>Nome, Empresa, Telefone, Produto sugerido, Cidade, UF, Fonte, Score</strong>. Telefones duplicados são removidos. As variáveis do template usam Nome ({{1}}) e Cidade ({{2}}).</span>
+              <span>Colunas: <strong>Nome, Empresa, Telefone, Produto sugerido, Cidade, UF, Fonte, Score</strong>. Telefones duplicados são removidos. As variáveis do template usam Nome <code>{"{{1}}"}</code> e Cidade <code>{"{{2}}"}</code>.</span>
             </div>
           </div>
         </div>
