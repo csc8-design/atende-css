@@ -1177,7 +1177,7 @@ export type Database = {
           meta_template_name?: string | null
           name: string
           replied_count?: number
-          segment: string
+          segment?: string
           sent_count?: number
           started_at?: string | null
           status?: string

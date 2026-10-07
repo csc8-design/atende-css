@@ -43,6 +43,13 @@
       "when": 1790594912610,
       "tag": "0005_base_schema_part6",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791393565740,
+      "tag": "0006_mass_campaigns_segment_default",
+      "breakpoints": true
     }
   ]
 }
