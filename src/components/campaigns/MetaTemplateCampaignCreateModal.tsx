@@ -1,8 +1,10 @@
 import { useState, useRef, useMemo, useEffect } from "react";
 import * as XLSX from "xlsx";
-import { Upload, X, FileSpreadsheet, Loader2, Info, Users2 } from "lucide-react";
+import { Upload, Download, X, FileSpreadsheet, Loader2, Info, Users2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Props {
   open: boolean;
@@ -100,6 +102,20 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
   }, [rows, template]);
 
   if (!open) return null;
+
+  const downloadSpreadsheetTemplate = () => {
+    try {
+      const headers = ["Nome", "Empresa", "Telefone", "Produto sugerido", "Cidade", "UF", "Fonte", "Score", "Prioridade", "Email"];
+      const sheet = XLSX.utils.aoa_to_sheet([headers]);
+      sheet["!cols"] = headers.map((header) => ({ wch: header === "UF" ? 8 : header === "Email" ? 32 : 24 }));
+      sheet["!autofilter"] = { ref: "A1:J1" };
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, sheet, "Leads");
+      XLSX.writeFile(workbook, "modelo-campanha.xlsx");
+    } catch {
+      toast.error("Não foi possível baixar o modelo de planilha");
+    }
+  };
 
   const handleFile = async (file: File) => {
     try {
@@ -270,7 +286,20 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Planilha de leads</label>
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <label className="text-xs font-semibold text-muted-foreground uppercase">Planilha de leads</label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary"
+                      aria-label="Baixar modelo de planilha" onClick={downloadSpreadsheetTemplate}>
+                      <Download className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Baixar modelo de planilha (.xlsx)</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv"
               onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} className="hidden" />
             <button onClick={() => fileRef.current?.click()}
