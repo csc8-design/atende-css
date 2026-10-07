@@ -38,15 +38,9 @@ function firstName(name?: string | null, fallback?: string | null): string {
   return "Cliente";
 }
 
-const ENABLED_TEMPLATE = "template_teste";
-
-// template_teste não envia parâmetros. Se a versão aprovada ganhar variáveis,
-// o mapeamento deve ser atualizado para refletir exatamente a ordem da Meta.
-const TEMPLATE_VARS: Record<string, (lead: any) => string[]> = {
-  template_teste: () => [],
-};
-
-function buildTemplateComponents(templateName: string, lead: any, headerMediaUrl?: string | null) {
+// Preenche as variáveis do corpo do template: {{1}} = primeiro nome,
+// {{2}} = cidade, demais = valor genérico. Templates sem variáveis enviam vazio.
+function buildTemplateComponents(lead: any, varCount: number, headerMediaUrl?: string | null) {
   const components: any[] = [];
   if (headerMediaUrl) {
     components.push({
@@ -54,9 +48,11 @@ function buildTemplateComponents(templateName: string, lead: any, headerMediaUrl
       parameters: [{ type: "image", image: { link: headerMediaUrl } }],
     });
   }
-  const varsFn = TEMPLATE_VARS[templateName];
-  const vars = varsFn ? varsFn(lead) : [];
-  if (vars.length > 0) {
+  if (varCount > 0) {
+    const nome = firstName(lead.nome, lead.empresa) || "tudo bem";
+    const cidade = (lead.cidade || "").trim() || "sua região";
+    const values = [nome, cidade];
+    const vars = Array.from({ length: varCount }, (_, i) => values[i] || "atendimento");
     components.push({
       type: "body",
       parameters: vars.map((v) => ({ type: "text", text: v })),
