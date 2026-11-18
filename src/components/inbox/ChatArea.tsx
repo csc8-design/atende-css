@@ -1188,7 +1188,7 @@ const ChatArea = ({ conversation, isMobile, onBack, onShowContact, onConversatio
               <button
                 disabled={claimingPortfolio}
                 title="Gerenciar carteira"
-                className={`hidden md:inline-flex items-center gap-1.5 px-2.5 py-1.5 mr-1 rounded-full text-xs font-medium border transition-colors disabled:opacity-60 ${
+                className={`hidden md:inline-flex flex-shrink-0 whitespace-nowrap max-w-[220px] items-center gap-1.5 px-2.5 py-1.5 mr-1 rounded-full text-xs font-medium border transition-colors disabled:opacity-60 ${
                   contactOwnerId === null
                     ? "border-primary/30 bg-primary/5 text-primary hover:bg-primary/10"
                     : contactOwnerId === user?.id
@@ -1205,7 +1205,7 @@ const ChatArea = ({ conversation, isMobile, onBack, onShowContact, onConversatio
                 ) : (
                   <BriefcaseBusiness className="w-3.5 h-3.5" />
                 )}
-                <span>
+                <span className="truncate">
                   {contactOwnerId === null
                     ? "Adicionar à minha carteira"
                     : contactOwnerId === user?.id
