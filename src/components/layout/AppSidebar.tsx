@@ -2,35 +2,16 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useBranding } from "@/hooks/useBranding";
 import {
-  LayoutDashboard,
-  MessageSquare,
-  Users,
-  Megaphone,
-  Settings,
   ChevronLeft,
   ChevronRight,
   Zap,
-  BarChart3,
-  History,
-  HelpCircle,
-  Calendar,
-  Brain,
-  Star,
+  Settings,
   Sun,
   Moon,
   LogOut,
   User,
   ChevronUp,
-  Activity,
-  Shield,
-  TrendingUp,
-  Timer,
-  Globe,
-  ShoppingBag,
   ChevronDown,
-  Wrench,
-  ClipboardCheck,
-  BriefcaseBusiness,
 } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import { EVOLUTION_ENABLED } from "@/lib/features";
@@ -47,36 +28,38 @@ import {
 
 const COMERCIAL_DEPT_ID = "11111111-0001-4000-8000-000000000001";
 
+const SECTION_ORDER = ["GERAL", "COMERCIAL", "SISTEMA"];
+
 const allNavItems: any[] = [
-  { icon: MessageSquare, label: "Atendimento", path: "/inbox", roles: ["admin", "manager", "agent"] },
+  { label: "Atendimento", path: "/inbox", roles: ["admin", "manager", "agent"], section: "GERAL" },
   {
-    icon: BriefcaseBusiness,
     label: "Carteira de Clientes",
     path: "/carteira",
     roles: ["admin", "manager", "agent"],
+    section: "COMERCIAL",
     children: [
-      { icon: BriefcaseBusiness, label: "Minha Carteira", path: "/minha-carteira", roles: ["admin", "manager", "agent"] },
-      { icon: BarChart3, label: "Análise de Interações", path: "/carteira/analise", roles: ["admin", "manager"] },
+      { label: "Minha Carteira", path: "/minha-carteira", roles: ["admin", "manager", "agent"] },
+      { label: "Análise de Interações", path: "/carteira/analise", roles: ["admin", "manager"] },
     ],
   },
-  { icon: ClipboardCheck, label: "Qualificação IA", path: "/qualificacao", roles: ["admin", "manager", "agent"], requiresQualEmail: true, requiresEvolution: true },
-  { icon: Timer, label: "SLA - Atendimento", path: "/sla", roles: ["admin", "manager"] },
-  { icon: Megaphone, label: "Campanhas", path: "/campaigns", roles: ["admin", "manager", "agent"], requiresQualEmail: true },
+  { label: "Qualificação IA", path: "/qualificacao", roles: ["admin", "manager", "agent"], section: "COMERCIAL", requiresQualEmail: true, requiresEvolution: true },
+  { label: "SLA - Atendimento", path: "/sla", roles: ["admin", "manager"], section: "COMERCIAL" },
+  { label: "Campanhas", path: "/campaigns", roles: ["admin", "manager", "agent"], section: "COMERCIAL", requiresQualEmail: true },
   {
-    icon: Wrench,
     label: "Utilitários",
     path: "/utilitarios",
     roles: ["admin", "manager", "agent"],
+    section: "SISTEMA",
     children: [
-      { icon: Activity, label: "Monitoramento", path: "/monitoring", roles: ["admin", "manager"] },
-      { icon: Brain, label: "IA & Chatbot", path: "/chatbot", roles: ["admin", "manager"] },
-      { icon: Users, label: "Contatos", path: "/contacts", roles: ["admin", "manager", "agent"] },
-      { icon: BarChart3, label: "Relatórios", path: "/reports", roles: ["admin", "manager"] },
-      { icon: Star, label: "Avaliações", path: "/satisfaction", roles: ["admin", "manager"] },
-      { icon: TrendingUp, label: "CRM", path: "/crm", roles: ["admin", "manager", "agent"], requiresComercial: true },
+      { label: "Monitoramento", path: "/monitoring", roles: ["admin", "manager"] },
+      { label: "IA & Chatbot", path: "/chatbot", roles: ["admin", "manager"] },
+      { label: "Contatos", path: "/contacts", roles: ["admin", "manager", "agent"] },
+      { label: "Relatórios", path: "/reports", roles: ["admin", "manager"] },
+      { label: "Avaliações", path: "/satisfaction", roles: ["admin", "manager"] },
+      { label: "CRM", path: "/crm", roles: ["admin", "manager", "agent"], requiresComercial: true },
     ],
   },
-  { icon: Settings, label: "Configurações", path: "/settings", roles: ["admin", "manager", "agent"] },
+  { label: "Configurações", path: "/settings", roles: ["admin", "manager", "agent"], section: "SISTEMA" },
 ];
 
 const AppSidebar = () => {
@@ -132,7 +115,6 @@ const AppSidebar = () => {
     return () => { supabase.removeChannel(channel); };
   }, [user]);
 
-
   const isDark = theme === "dark" || (theme === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
   const toggleTheme = () => {
@@ -173,7 +155,21 @@ const AppSidebar = () => {
       return true;
     });
 
-  // Track open state for grouped nav items (e.g. LEAD)
+  // Dashboard belongs to GERAL and only shows for admin/manager
+  const navItems = isAgent
+    ? filteredNavItems
+    : [
+        { label: "Dashboard", path: "/", roles: ["admin", "manager"], section: "GERAL", exact: true },
+        ...filteredNavItems,
+      ];
+
+  // Group by section, keeping SECTION_ORDER
+  const sections = SECTION_ORDER.map((name) => ({
+    name,
+    items: navItems.filter((it: any) => (it.section || "GERAL") === name),
+  })).filter((s) => s.items.length > 0);
+
+  // Track open state for grouped nav items
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     filteredNavItems.forEach((it: any) => {
@@ -184,6 +180,14 @@ const AppSidebar = () => {
     return initial;
   });
 
+  const renderDot = (active: boolean) => (
+    <span
+      className={`w-1.5 h-1.5 rounded-full flex-shrink-0 transition-colors ${
+        active ? "bg-primary" : "bg-sidebar-foreground/30"
+      }`}
+    />
+  );
+
   const renderNavEntry = (item: any) => {
     // Grouped item with children
     if (item.children) {
@@ -191,7 +195,6 @@ const AppSidebar = () => {
       const isOpen = openGroups[item.path] ?? anyChildActive;
 
       if (collapsed) {
-        // Collapsed: show parent icon as link to first child + tooltip
         const first = item.children[0];
         return (
           <Link
@@ -204,7 +207,7 @@ const AppSidebar = () => {
                 : "text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground"
             }`}
           >
-            <item.icon className={`w-5 h-5 flex-shrink-0 ${anyChildActive ? "text-primary" : ""}`} />
+            {renderDot(anyChildActive)}
             <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-popover text-popover-foreground text-xs font-medium shadow-lg border border-border opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               {item.label}
             </span>
@@ -219,31 +222,31 @@ const AppSidebar = () => {
             onClick={() => setOpenGroups((s) => ({ ...s, [item.path]: !isOpen }))}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 w-full ${
               anyChildActive
-                ? "bg-primary/10 text-primary"
+                ? "bg-primary/15 text-primary"
                 : "text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground"
             }`}
           >
-            <item.icon className={`w-5 h-5 flex-shrink-0 ${anyChildActive ? "text-primary" : ""}`} />
+            {renderDot(anyChildActive)}
             <span className="animate-fade-in flex-1 text-left tracking-wide">{item.label}</span>
             <ChevronDown
-              className={`w-4 h-4 flex-shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
+              className={`w-4 h-4 flex-shrink-0 opacity-60 transition-transform ${isOpen ? "rotate-180" : ""}`}
             />
           </button>
           {isOpen && (
-            <div className="flex flex-col gap-1 mt-1 ml-3 pl-3 border-l border-sidebar-border">
+            <div className="flex flex-col gap-1 mt-1 ml-[18px] pl-3 border-l border-sidebar-border">
               {item.children.map((child: any) => {
                 const childActive = location.pathname.startsWith(child.path);
                 return (
                   <Link
                     key={child.path}
                     to={child.path}
-                    className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all ${
                       childActive
                         ? "bg-primary/15 text-primary"
                         : "text-sidebar-foreground/80 hover:bg-sidebar-hover hover:text-sidebar-primary-foreground"
                     }`}
                   >
-                    <child.icon className={`w-4 h-4 flex-shrink-0 ${childActive ? "text-primary" : ""}`} />
+                    {renderDot(childActive)}
                     <span className="animate-fade-in">{child.label}</span>
                   </Link>
                 );
@@ -255,7 +258,9 @@ const AppSidebar = () => {
     }
 
     // Regular item
-    const isActive = location.pathname.startsWith(item.path);
+    const isActive = item.exact
+      ? location.pathname === item.path
+      : location.pathname.startsWith(item.path);
     return (
       <Link
         key={item.path}
@@ -267,15 +272,16 @@ const AppSidebar = () => {
             : "text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground"
         }`}
       >
-        <item.icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-primary" : ""}`} />
+        {collapsed ? (
+          <span className="flex items-center justify-center w-full">{renderDot(isActive)}</span>
+        ) : (
+          renderDot(isActive)
+        )}
         {!collapsed && <span className="animate-fade-in">{item.label}</span>}
         {item.path === "/inbox" && unreadCount > 0 && (
           <span className={`${collapsed ? "absolute -top-1 -right-1" : "ml-auto"} min-w-[20px] h-5 px-1.5 rounded-full bg-destructive text-destructive-foreground text-[11px] font-bold flex items-center justify-center`}>
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
-        )}
-        {isActive && !collapsed && item.path !== "/inbox" && (
-          <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary animate-pulse-soft" />
         )}
         {collapsed && (
           <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-popover text-popover-foreground text-xs font-medium shadow-lg border border-border opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
@@ -285,6 +291,20 @@ const AppSidebar = () => {
       </Link>
     );
   };
+
+  const renderSections = () =>
+    sections.map((section, idx) => (
+      <div key={section.name} className={idx === 0 ? "pb-1" : "pt-5 pb-1"}>
+        {!collapsed && (
+          <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-sidebar-foreground/45">
+            {section.name}
+          </p>
+        )}
+        <div className="flex flex-col gap-1">
+          {section.items.map((item: any) => renderNavEntry(item))}
+        </div>
+      </div>
+    ));
 
   // Agent: sidebar with expand/collapse like admin
   if (isAgent) {
@@ -310,8 +330,8 @@ const AppSidebar = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 flex flex-col gap-1 pt-4 px-3 overflow-y-auto">
-          {filteredNavItems.map((item) => renderNavEntry(item))}
+        <nav className="flex-1 py-4 px-3 overflow-y-auto scrollbar-thin">
+          {renderSections()}
         </nav>
 
         {/* Notifications */}
@@ -404,24 +424,9 @@ const AppSidebar = () => {
         )}
       </div>
 
-      {/* Dashboard link - only for admin/manager */}
-      <div className="px-3 pt-4 pb-2">
-        <Link
-          to="/"
-          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-            location.pathname === "/"
-              ? "bg-primary/15 text-primary"
-              : "text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground"
-          }`}
-        >
-          <LayoutDashboard className={`w-5 h-5 flex-shrink-0 ${location.pathname === "/" ? "text-primary" : ""}`} />
-          {!collapsed && <span className="animate-fade-in">Dashboard</span>}
-        </Link>
-      </div>
-
       {/* Navigation */}
-      <nav className="flex-1 py-2 px-3 space-y-1 overflow-y-auto scrollbar-thin">
-        {filteredNavItems.map((item) => renderNavEntry(item))}
+      <nav className="flex-1 py-4 px-3 overflow-y-auto scrollbar-thin">
+        {renderSections()}
       </nav>
 
       {/* Notifications */}
