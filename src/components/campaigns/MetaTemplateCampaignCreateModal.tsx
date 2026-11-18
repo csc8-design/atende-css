@@ -146,6 +146,29 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
 
     setSubmitting(true);
     try {
+      // Mapa de telefones já usados em outras campanhas (chave: DDD + 8 últimos dígitos)
+      const phoneKey = (raw: string) => {
+        let d = (raw || "").replace(/\D/g, "");
+        if (d.startsWith("55") && d.length >= 12) d = d.slice(2);
+        if (d.length < 10) return "";
+        return d.slice(0, 2) + d.slice(-8);
+      };
+      const used = new Map<string, string>();
+      for (let from = 0; ; from += 1000) {
+        const { data: prev, error: pErr } = await supabase
+          .from("mass_campaign_leads")
+          .select("telefone, telefone_normalizado, mass_campaigns(name)")
+          .range(from, from + 999);
+        if (pErr) throw pErr;
+        (prev || []).forEach((l: any) => {
+          const k = phoneKey(l.telefone_normalizado || l.telefone);
+          if (k && !used.has(k)) used.set(k, l.mass_campaigns?.name || "outra campanha");
+        });
+        if (!prev || prev.length < 1000) break;
+      }
+      const dupes: string[] = [];
+      const dupeCampaigns = new Set<string>();
+
       const selected = templates.find((t) => t.name === templateName)!;
       const { data: campaign, error: cErr } = await supabase
         .from("mass_campaigns")
@@ -168,8 +191,14 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
           const phoneRaw = pick(r, ["Telefone normalizado", "Telefone", "Phone", "phone", "Celular"]) || "";
           const phone = normPhone(phoneRaw);
           if (!phone || phone.length < 10) return null;
-          if (seen.has(phone)) return null;
-          seen.add(phone);
+          const key = phoneKey(phone);
+          if (seen.has(key)) return null;
+          seen.add(key);
+          if (used.has(key)) {
+            dupes.push(phoneRaw);
+            dupeCampaigns.add(used.get(key)!);
+            return null;
+          }
           const scoreStr = pick(r, ["Score", "score"]);
           return {
             campaign_id: campaign.id,
@@ -192,7 +221,9 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
 
       if (leads.length === 0) {
         await supabase.from("mass_campaigns").delete().eq("id", campaign.id);
-        throw new Error("Nenhum lead válido encontrado (verifique a coluna Telefone)");
+        throw new Error(dupes.length
+          ? `Todos os ${dupes.length} números já foram enviados em outra campanha (${[...dupeCampaigns].join(", ")}). Nada foi criado.`
+          : "Nenhum lead válido encontrado (verifique a coluna Telefone)");
       }
 
       for (let i = 0; i < leads.length; i += 500) {
@@ -204,6 +235,9 @@ export default function MetaTemplateCampaignCreateModal({ open, onClose, onCreat
       await supabase.from("mass_campaigns").update({ total_leads: leads.length }).eq("id", campaign.id);
 
       toast.success(`Campanha criada com ${leads.length} leads`);
+      if (dupes.length) {
+        toast.warning(`${dupes.length} número(s) ignorado(s): já enviados em outra campanha (${[...dupeCampaigns].join(", ")})`, { duration: 10000 });
+      }
       reset();
       onCreated();
       onClose();

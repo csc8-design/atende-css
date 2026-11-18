@@ -78,6 +78,26 @@ async function sendOne(admin: any, token: string, phoneNumberId: string, lead: a
     }).eq("id", lead.id);
     return { ok: false, reason: "invalid_phone" };
   }
+  // Bloqueia número já usado em outra campanha (mesmo DDD + 8 últimos dígitos)
+  const local = phone.slice(2);
+  const ddd = local.slice(0, 2), last8 = local.slice(-8);
+  const { data: others } = await admin.from("mass_campaign_leads")
+    .select("telefone, telefone_normalizado, mass_campaigns(name)")
+    .neq("campaign_id", lead.campaign_id)
+    .ilike("telefone_normalizado", `%${last8}`)
+    .limit(50);
+  const dup = (others || []).find((o: any) => {
+    const n = normalizePhone(o.telefone_normalizado || o.telefone).slice(2);
+    return n.slice(0, 2) === ddd && n.slice(-8) === last8;
+  });
+  if (dup) {
+    await admin.from("mass_campaign_leads").update({
+      status: "failed",
+      error_message: `Já enviado na campanha "${(dup as any).mass_campaigns?.name || "outra"}"`,
+      updated_at: new Date().toISOString(),
+    }).eq("id", lead.id);
+    return { ok: false, reason: "duplicate" };
+  }
 
   const components = buildTemplateComponents(lead, varCount, headerMediaUrl);
   const body: any = {
