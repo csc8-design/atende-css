@@ -204,7 +204,7 @@ const AppSidebar = () => {
             className={`flex items-center justify-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative ${
               anyChildActive
                 ? "bg-primary/15 text-primary"
-                : "text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground"
+                : "text-sidebar-foreground hover:bg-sidebar-hover hover:text-primary"
             }`}
           >
             {renderDot(anyChildActive)}
@@ -223,7 +223,7 @@ const AppSidebar = () => {
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 w-full ${
               anyChildActive
                 ? "bg-primary/15 text-primary"
-                : "text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground"
+                : "text-sidebar-foreground hover:bg-sidebar-hover hover:text-primary"
             }`}
           >
             {renderDot(anyChildActive)}
@@ -243,7 +243,7 @@ const AppSidebar = () => {
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all ${
                       childActive
                         ? "bg-primary/15 text-primary"
-                        : "text-sidebar-foreground/80 hover:bg-sidebar-hover hover:text-sidebar-primary-foreground"
+                        : "text-sidebar-foreground/80 hover:bg-sidebar-hover hover:text-primary"
                     }`}
                   >
                     {renderDot(childActive)}
@@ -269,7 +269,7 @@ const AppSidebar = () => {
         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative ${
           isActive
             ? "bg-primary/15 text-primary"
-            : "text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground"
+            : "text-sidebar-foreground hover:bg-sidebar-hover hover:text-primary"
         }`}
       >
         {collapsed ? (
@@ -343,7 +343,7 @@ const AppSidebar = () => {
         <div className="px-3 pb-2 border-t border-sidebar-border pt-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium w-full text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground transition-colors">
+              <button className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium w-full text-sidebar-foreground hover:bg-sidebar-hover hover:text-primary transition-colors">
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt="Avatar" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
                 ) : (
@@ -393,7 +393,7 @@ const AppSidebar = () => {
         <div className="px-3 pb-4">
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="flex items-center justify-center w-full py-2 rounded-lg text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground transition-colors"
+            className="flex items-center justify-center w-full py-2 rounded-lg text-sidebar-foreground hover:bg-sidebar-hover hover:text-primary transition-colors"
           >
             {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </button>
@@ -438,7 +438,7 @@ const AppSidebar = () => {
       <div className="px-3 pb-2 border-t border-sidebar-border pt-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium w-full text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground transition-colors">
+            <button className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium w-full text-sidebar-foreground hover:bg-sidebar-hover hover:text-primary transition-colors">
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="Avatar" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
               ) : (
@@ -488,7 +488,7 @@ const AppSidebar = () => {
       <div className="px-3 pb-4">
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center justify-center w-full py-2 rounded-lg text-sidebar-foreground hover:bg-sidebar-hover hover:text-sidebar-primary-foreground transition-colors"
+          className="flex items-center justify-center w-full py-2 rounded-lg text-sidebar-foreground hover:bg-sidebar-hover hover:text-primary transition-colors"
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </button>
