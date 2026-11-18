@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
@@ -19,6 +20,7 @@ const Inbox = () => {
   const [selected, setSelected] = useState<ConversationWithContact | null>(null);
   const [newConvOpen, setNewConvOpen] = useState(false);
   const [showContactPanel, setShowContactPanel] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [conversationPatches, setConversationPatches] = useState<Record<string, Partial<ConversationWithContact>>>({});
   const { conversations, loading, refetch } = useConversations();
 
@@ -164,12 +166,26 @@ const Inbox = () => {
           onSelect={handleSelect}
           onNewConversation={() => setNewConvOpen(true)}
         />
-        <ChatArea conversation={selected} onConversationPatch={handleConversationPatch} />
-        <ContactPanel
-          conversation={selected}
-          onConversationUpdate={handleConversationUpdate}
-          onConversationPatch={handleConversationPatch}
-        />
+        <div className="relative flex flex-1 min-w-0">
+          <ChatArea conversation={selected} onConversationPatch={handleConversationPatch} />
+          {selected && (
+            <button
+              onClick={() => setPanelOpen((v) => !v)}
+              aria-label={panelOpen ? "Recolher informações do contato" : "Mostrar informações do contato"}
+              title={panelOpen ? "Recolher informações" : "Mostrar informações"}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 h-12 w-4 flex items-center justify-center rounded-l-md border border-r-0 border-border bg-card text-muted-foreground hover:text-foreground shadow-sm"
+            >
+              {panelOpen ? <ChevronRight className="w-3 h-3" /> : <ChevronLeft className="w-3 h-3" />}
+            </button>
+          )}
+        </div>
+        {panelOpen && (
+          <ContactPanel
+            conversation={selected}
+            onConversationUpdate={handleConversationUpdate}
+            onConversationPatch={handleConversationPatch}
+          />
+        )}
       </div>
 
       <NewConversationModal

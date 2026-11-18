@@ -1317,24 +1317,11 @@ const ChatArea = ({ conversation, isMobile, onBack, onShowContact, onConversatio
             </PopoverContent>
           </Popover>
 
-          {!isMobile && (
-            <>
-              <button className="p-2 rounded-lg hover:bg-secondary text-muted-foreground transition-colors">
-                <Phone className="w-4 h-4" />
-              </button>
-              <button className="p-2 rounded-lg hover:bg-secondary text-muted-foreground transition-colors">
-                <Video className="w-4 h-4" />
-              </button>
-            </>
-          )}
           {isMobile && onShowContact && (
             <button onClick={onShowContact} className="p-2 rounded-lg hover:bg-secondary text-muted-foreground transition-colors">
               <UserCircle className="w-5 h-5" />
             </button>
           )}
-          <button className="p-2 rounded-lg hover:bg-secondary text-muted-foreground transition-colors">
-            <MoreVertical className="w-4 h-4" />
-          </button>
         </div>
       </div>
 
