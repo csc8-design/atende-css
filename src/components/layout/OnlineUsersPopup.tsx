@@ -3,7 +3,7 @@ import { Users, X, Send, MessageCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
 interface OnlineUser {
@@ -18,6 +18,8 @@ const PRESENCE_CHANNEL = "presence:online-users";
 const OnlineUsersPopup = () => {
   const { user, profile, isAdmin, isManager } = useAuth();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const bottomPosition = pathname === '/inbox' ? 'bottom-40' : 'bottom-4';
   const [online, setOnline] = useState<OnlineUser[]>([]);
   const [open, setOpen] = useState(false);
   const [composeFor, setComposeFor] = useState<OnlineUser | null>(null);
@@ -137,7 +139,7 @@ const OnlineUsersPopup = () => {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-4 right-4 z-50 group flex items-center justify-center w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-110 transition-all"
+        className={`fixed ${bottomPosition} right-4 z-50 group flex items-center justify-center w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-110 transition-all`}
         title={`${online.length} usuário(s) online`}
         aria-label="Usuários online"
       >
@@ -154,7 +156,7 @@ const OnlineUsersPopup = () => {
   return (
     <div
       ref={panelRef}
-      className="fixed bottom-4 right-4 z-50 w-80 bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 fade-in duration-200 origin-bottom-right"
+      className={`fixed ${bottomPosition} right-4 z-50 w-80 bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 fade-in duration-200 origin-bottom-right`}
     >
       <div className="flex items-center justify-between gap-2 px-3 py-2.5 bg-primary text-primary-foreground">
         <div className="flex items-center gap-2 min-w-0">
