@@ -6,3 +6,4 @@
 - Controle de acesso no front usa `isAdmin`/`isManager` do AuthContext (tabela user_roles) — nunca e-mails ou UUIDs fixos.
 - A identidade visual usa tokens semânticos em `src/index.css`, fonte Inter (Google Fonts, link no index.html, pesos 400/500/600/700) e logo CSS em `public/css-logo.png` — o arquivo local garante compatibilidade com deploy FTP na Hostinger.
 - Generate campaign spreadsheet templates in the browser with the existing XLSX library and importer-compatible headers, so downloads work on FTP deployments without a backend dependency.
+- Chat attachments stay in private storage; send-whatsapp signs owned storage paths for Meta and chat display, never constructs public links. Normalize photo formats in the browser before upload to meet Meta's media constraints.

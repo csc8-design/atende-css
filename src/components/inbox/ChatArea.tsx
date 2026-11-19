@@ -22,6 +22,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import ChannelBadge from "@/components/shared/ChannelBadge";
 import { maskPhone } from "@/lib/maskPhone";
+import { getMediaType, validateMediaSize } from "@/lib/chatMedia";
 
 import { toast } from "sonner";
 
@@ -33,7 +34,20 @@ interface QuickReplyItem {
 }
 
 const MediaContent = ({ msg }: { msg: any }) => {
-  const { message_type, media_url, content } = msg;
+  const { message_type, content } = msg;
+  const [media_url, setMediaUrl] = useState<string | null>(msg.media_url);
+  useEffect(() => {
+    let active = true;
+    setMediaUrl(msg.media_url);
+    const prefix = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/whatsapp-media/`;
+    const path = msg.metadata?.media_path || (msg.media_url?.startsWith(prefix) ? decodeURIComponent(msg.media_url.slice(prefix.length)) : null);
+    if (path) {
+      supabase.storage.from('whatsapp-media').createSignedUrl(path, 3600).then(({ data }) => {
+        if (active && data?.signedUrl) setMediaUrl(data.signedUrl);
+      });
+    }
+    return () => { active = false; };
+  }, [msg.media_url, msg.metadata?.media_path]);
 
   if (!media_url) return <p>{content}</p>;
 
@@ -896,6 +910,9 @@ const ChatArea = ({ conversation, isMobile, onBack, onShowContact, onConversatio
       const { data, error } = await sendFile(conversation.id, fileToSend, trimmedText || undefined, metadata);
       if (error || !data?.message) {
         if (optimisticMessage) removeMessage(optimisticMessage.id);
+        setSelectedFile(fileToSend);
+        setMessage(draftText);
+        if (getMediaType(fileToSend).kind === 'image') setFilePreview(URL.createObjectURL(fileToSend));
         toast.error(error?.message || "Erro ao enviar arquivo");
         await refetch();
         return;
@@ -954,9 +971,11 @@ const ChatArea = ({ conversation, isMobile, onBack, onShowContact, onConversatio
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const maxSize = 100 * 1024 * 1024; // 100MB (limite da API do WhatsApp)
-    if (file.size > maxSize) {
-      toast.error("O arquivo deve ter no máximo 100MB");
+    try {
+      const { kind } = getMediaType(file);
+      validateMediaSize(kind === 'image' ? 'document' : kind, file.size);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Arquivo inválido');
       e.target.value = "";
       return;
     }
@@ -1682,7 +1701,6 @@ const ChatArea = ({ conversation, isMobile, onBack, onShowContact, onConversatio
           ref={fileInputRef}
           type="file"
           className="hidden"
-          accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv"
           onChange={handleFileSelect}
         />
 

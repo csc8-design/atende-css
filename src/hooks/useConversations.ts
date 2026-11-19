@@ -1,5 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { Upload } from "tus-js-client";
+import { getMediaType, prepareChatFile } from "@/lib/chatMedia";
+import { FunctionsHttpError } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
@@ -481,10 +483,7 @@ export function useSendMessage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
 
-      const maxSize = 100 * 1024 * 1024; // 100MB (limite da API do WhatsApp para documentos)
-      if (file.size > maxSize) {
-        throw new Error("O arquivo deve ter no máximo 100MB");
-      }
+      file = await prepareChatFile(file);
 
       // Upload file to Supabase Storage using TUS resumable upload for large files
       const ext = file.name.split(".").pop()?.toLowerCase() || "bin";
@@ -528,37 +527,24 @@ export function useSendMessage() {
         }).catch(reject);
       });
 
-      const mediaUrl = `${storageUrl}/storage/v1/object/public/whatsapp-media/${uniqueName}`;
-
-      // Determine message type
-      let messageType = "document";
-      if (mimeType.startsWith("image/")) messageType = "image";
-      else if (mimeType.startsWith("video/")) messageType = "video";
-      else if (mimeType.startsWith("audio/")) messageType = "audio";
-
-      // Send via edge function with media URL (no file in body)
-      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-      const res = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/send-whatsapp`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+      const { kind: messageType } = getMediaType(file);
+      const { data: result, error: invokeError } = await supabase.functions.invoke('send-whatsapp', {
+          body: {
             conversationId,
             message: caption || "",
             messageType,
-            mediaUrl,
+            mediaPath: uniqueName,
             fileName: file.name,
             metadata,
-          }),
+          },
+      });
+      if (invokeError) {
+        if (invokeError instanceof FunctionsHttpError) {
+          const details = await invokeError.context.json().catch(() => null);
+          throw new Error(details?.details?.error?.message || details?.error || invokeError.message);
         }
-      );
-
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.error || "Failed to send file");
+        throw invokeError;
+      }
       return { data: result, error: null };
     } catch (error: any) {
       console.error("Send file error:", error);

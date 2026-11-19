@@ -1,10 +1,6 @@
 import { getMetaCreds } from "../_shared/meta-creds.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -46,6 +42,7 @@ Deno.serve(async (req) => {
     let templateLanguage = "pt_BR";
     let templateComponents: any[] = [];
     let mediaUrl: string | null = null;
+    let mediaPath: string | null = null;
     let fileName: string | null = null;
     let metadata: Record<string, any> | null = null;
 
@@ -103,8 +100,7 @@ Deno.serve(async (req) => {
         });
       }
 
-      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-      mediaUrl = `${supabaseUrl}/storage/v1/object/public/whatsapp-media/${uniqueName}`;
+      mediaPath = uniqueName;
     } else {
       // Handle JSON body (text / template / pre-uploaded media)
       const body = await req.json();
@@ -115,11 +111,12 @@ Deno.serve(async (req) => {
       templateLanguage = body.templateLanguage || "pt_BR";
       templateComponents = body.templateComponents || [];
       mediaUrl = body.mediaUrl || null;
+      mediaPath = body.mediaPath || null;
       fileName = body.fileName || null;
       metadata = body.metadata || null;
     }
 
-    if (!conversationId || (!message && !templateName && !mediaUrl)) {
+    if (!conversationId || (!message && !templateName && !mediaUrl && !mediaPath)) {
       return new Response(
         JSON.stringify({ error: "conversationId and (message, templateName, or file) are required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -132,7 +129,7 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { data: conversation, error: convError } = await serviceClient
+    const { data: conversation, error: convError } = await supabase
       .from("conversations")
       .select("*, contacts(*)")
       .eq("id", conversationId)
@@ -145,9 +142,26 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Keep the bucket private. Legacy clients also pass public object URLs;
+    // turn only this project's bucket paths into temporary download links.
+    if (!mediaPath && mediaUrl) {
+      const prefix = `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/whatsapp-media/`;
+      if (mediaUrl.startsWith(prefix)) mediaPath = decodeURIComponent(mediaUrl.slice(prefix.length));
+    }
+    if (mediaPath) {
+      if (typeof mediaPath !== 'string' || mediaPath.includes('..') || mediaPath.startsWith('/')) {
+        return new Response(JSON.stringify({ error: 'Caminho do anexo inválido.' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+      const { data: signed, error: signError } = await supabase.storage.from('whatsapp-media').createSignedUrl(mediaPath, 7 * 24 * 60 * 60);
+      if (signError || !signed?.signedUrl) throw new Error('Não foi possível acessar o anexo. Selecione o arquivo novamente.');
+      mediaUrl = signed.signedUrl;
+      metadata = { ...metadata, media_path: mediaPath, file_name: fileName };
+    }
+
     const phone = conversation.contacts?.phone;
-    const WHATSAPP_TOKEN = (await getMetaCreds()).token!;
-    const PHONE_NUMBER_ID = (await getMetaCreds()).phoneNumberId!;
+    const creds = await getMetaCreds();
+    const WHATSAPP_TOKEN = creds.token;
+    const PHONE_NUMBER_ID = creds.phoneNumberId;
 
     // Build mandatory signature: "FirstName LastName - Department:"
     let signature = "";
@@ -197,7 +211,7 @@ Deno.serve(async (req) => {
     }
 
     if (!WHATSAPP_TOKEN || !PHONE_NUMBER_ID) {
-      console.warn("WhatsApp credentials not configured, saving message locally only");
+      return new Response(JSON.stringify({ error: 'Configure a conexão da Meta antes de enviar.' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     } else {
       let waBody: any;
 
@@ -230,7 +244,7 @@ Deno.serve(async (req) => {
           type: waMediaType,
           [waMediaType]: {
             link: mediaUrl,
-            ...(message ? { caption: message } : {}),
+            ...(message && waMediaType !== 'audio' ? { caption: message.slice(0, 1024) } : {}),
             ...(waMediaType === "document" && fileName ? { filename: fileName } : {}),
           },
         };
@@ -242,8 +256,6 @@ Deno.serve(async (req) => {
           text: { body: message },
         };
       }
-
-      console.log("Sending WhatsApp message:", JSON.stringify(waBody));
 
       const waResponse = await fetch(
         `https://graph.facebook.com/v23.0/${PHONE_NUMBER_ID}/messages`,
@@ -262,7 +274,7 @@ Deno.serve(async (req) => {
 
       if (!waResponse.ok) {
         return new Response(
-          JSON.stringify({ error: "Failed to send WhatsApp message", details: waResult }),
+          JSON.stringify({ error: waResult.error?.message || "Falha ao enviar o anexo pelo WhatsApp", status: waResponse.status, details: waResult }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
